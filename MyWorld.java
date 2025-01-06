@@ -1,7 +1,8 @@
 import greenfoot.*;
 
-public class MyWorld extends World {
+public class MyWorld extends World 
+{    
     public MyWorld() {
-        super(600, 400, 1);
+        super(400, 600, 1);
     }
 }
