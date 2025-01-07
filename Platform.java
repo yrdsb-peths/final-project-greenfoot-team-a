@@ -2,17 +2,29 @@ import greenfoot.*;
 
 public class Platform extends Actor
 {
-    public Platform()
+    //String[] imagesArr = {};
+    int type;                    //variable for type of platform that is to be spawned (if == 0, last platform of level)
+    int speed;
+
+    public Platform(int type, int speed)
     {
+        this.type = type;
+        this.speed = speed;
+        
         GreenfootImage image = new GreenfootImage("temporaryPlatform.png");
-        image.scale(50,100);
+
+        //if last platform in level
+        if(type == 0)
+        {
+            image.scale(400, 80);
+        }
         setImage(image);
     }
 
     public void act()
     {
         //move platform down
-        setLocation(getX(), getY() + MyGame.speed);
+        setLocation(getX(), getY() + speed);
         removePlatform();
     }
 
@@ -21,10 +33,13 @@ public class Platform extends Actor
      */
     private void removePlatform()
     {
-        MyGame world = (MyGame) getWorld();
-        if(getY() + 60 >= 598)
+        if(type != 0)
         {
-            world.removeObject(this);   
+            MyGame world = (MyGame) getWorld();
+            if(getY() + 60 >= 598)
+            {
+                world.removeObject(this);   
+            }
         }
     }
 }
