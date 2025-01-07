@@ -22,17 +22,17 @@ public class InstructionScreen extends World
 
     public InstructionScreen() {
         super(600, 400, 1);
-        setBackground(new GreenfootImage("7481714.png"));
+        setBackground(new GreenfootImage("FinalISPBackground.png"));
         instructionLabel = new Label(instructions[currentIndex]);
         addObject(instructionLabel, 300, 200); 
 
-        addObject(new Button(this::previousInstruction), 100, 300); 
-        addObject(new Button(this::nextInstruction), 500, 300); 
+        addObject(new Button(this::previousInstruction), 90, 325); 
+        addObject(new Button(this::nextInstruction), 510, 325); 
        
         if(currentIndex < 3)
         {
-            addObject(new Label("Back"), 100, 270);
-            addObject(new Label("Next"), 500, 270);
+            addObject(new Label("Back"), 90, 325);
+            addObject(new Label("Next"), 510, 325);
         }
         
     }
