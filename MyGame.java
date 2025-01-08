@@ -12,6 +12,8 @@ public class MyGame extends World{
     {
         super(400,600,1);
         platformTimer.mark();
+        setBackground(new GreenfootImage("FinalISPBackground.png"));
+        Greenfoot.setWorld(new MenuScreen());
     }
 
     public void act()
