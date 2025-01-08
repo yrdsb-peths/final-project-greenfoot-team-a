@@ -9,13 +9,14 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 public class InstructionScreen extends World
 {
 
-    private String[] instructions = {
-        "In order to defeat the enemy, you must quickly type words that appear on a screen.",
-        "then you must press space for a new word to appear",
-        "The enemy will slowly move towards you and if the enemy touches you, you lose.",
-        "Otherwise you win and the score you get depends on the word you type. ",
+    private String [] instructions = {
+        "To play this game, you must use the _____ buttons to jump from one platform to another",
+        "During the game, you will encounter cat enemies you must dodge and coin to collect. ",
+        "You must also choose between going into the shop for weapons",
+        "Or using a trampoline for boost for the next level",
         "To begin the game, click the button, Next." 
     };
+    
     private int currentIndex = 0;
     private Label instructionLabel;
     private Button nextButton;
