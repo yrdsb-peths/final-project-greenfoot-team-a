@@ -12,11 +12,11 @@ public class Platform extends Actor
         this.speed = speed;
         
         GreenfootImage image = new GreenfootImage("temporaryPlatform.png");
-
+        image.scale(200,50);
         //if last platform in level
         if(type == 0)
         {
-            image.scale(400, 80);
+            image.scale(400, 50);
         }
         setImage(image);
     }
