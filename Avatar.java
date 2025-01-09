@@ -7,68 +7,95 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * 
  */
 
-public class Avatar extends Actor
-{
-    GreenfootImage sussyImage= new GreenfootImage("images/sussy.png");
-    private SimpleTimer timer = new SimpleTimer();
-    
-    private int velocity;
-    private int gravity=1;
-    private int counter = 0;
-    /**
-     * Act - do whatever the Avatar wants to do. This method is called whenever
-     * the 'Act' or 'Run' button gets pressed in the//Contructor environment.
-     */
-    
-    public Avatar(){
+public class Avatar extends Actor {
+    GreenfootImage sussyImage = new GreenfootImage("images/sussy.png");
+
+    private int velocity = 0; // The character's vertical velocity
+    private int gravity = 1; // Gravity pulling the character down
+    private int maxJumpVelocity = -20; // Maximum upward velocity for a fully charged jump
+    private int minJumpVelocity = -10; // Initial jump velocity for a short jump
+    private int jumpCharge = 0; // Tracks how long the jump key is held
+    private int maxChargeTime = 15; // Limit for charging the jump
+    private boolean isJumping = false; // Tracks if the character is in the air
+    private boolean keyReleased = true; // Tracks if the jump key has been released
+
+    private int groundLevel; // Ground level based on the world's height
+
+    public Avatar() {
         setImage(sussyImage);
-        sussyImage.scale(75,80);
-        velocity = 0;
+        sussyImage.scale(75, 80);
+        groundLevel = getWorld() == null ? 0 : getWorld().getHeight() - 100;
     }
-    
-    public void checkWarp(){
-        //Check if the avatar goes out of the right edge (X > world width)
-        if (getX()<1) {
-            setLocation(getWorld().getWidth()-2, getY()); //Warp to the right side
+
+    @Override
+    protected void addedToWorld(World world) {
+        groundLevel = world.getHeight() - 100; // Initialize ground level after the actor is added
+    }
+
+    public void checkWarp() {
+        if (getX() < 1) {
+            setLocation(getWorld().getWidth() - 2, getY()); // Warp to the right side
         }
-        // Check if the avatar goes out of the left edge (X > world width)
-        if (getX()>getWorld().getWidth()-2) {
-            setLocation(0, getY());  // Wrap to the right side
+        if (getX() > getWorld().getWidth() - 2) {
+            setLocation(0, getY()); // Wrap to the left side
         }
     }
-    
-    public void checkKeys(){
-        fall(); // Applies gravity to character
-        if(Greenfoot.isKeyDown("left"))
-        {
+
+    public void checkKeys() {
+        if (Greenfoot.isKeyDown("left")) {
             move(-5);
         }
-        if(Greenfoot.isKeyDown("right"))
-        {
+        if (Greenfoot.isKeyDown("right")) {
             move(5);
         }
-        if(Greenfoot.isKeyDown("up")){
-           jump();
+    }
+
+    public void checkJump() {
+        boolean jumpKeyHeld = Greenfoot.isKeyDown("up");
+
+        // Handle jump initiation
+        if (jumpKeyHeld && keyReleased) {
+            if (!isJumping) {
+                velocity = minJumpVelocity; // Start the jump
+                isJumping = true;
+                jumpCharge = 0; // Start charging the jump
+            }
+            keyReleased = false; // Prevent repeated jumping
+        }
+
+        // Handle jump charging while key is held
+        if (jumpKeyHeld && isJumping) {
+            if (jumpCharge < maxChargeTime) {
+                jumpCharge++;
+                velocity--; // Increase jump strength
+                if (velocity < maxJumpVelocity) {
+                    velocity = maxJumpVelocity; // Cap the jump velocity
+                }
+            }
+        }
+
+        // Reset when key is released
+        if (!jumpKeyHeld) {
+            keyReleased = true; // Allow the next jump
         }
     }
-    
-    public void jump(){
-        if(getY() > getWorld().getHeight() - 50){
-            velocity= - 20;
-        }
-    } 
-    
-    public void fall(){
+
+    public void fall() {
         setLocation(getX(), getY() + velocity); // Updates location
-        if(getY()> getWorld().getHeight() - 50){
-            velocity = 0; // Makes sure character does not fall beyond surface
+
+        // If the character hits or sinks below the ground, reset
+        if (getY() >= groundLevel) {
+            setLocation(getX(), groundLevel); // Snap to ground level
+            velocity = 0; // Stop falling
+            isJumping = false; // Allow jumping again
         } else {
-            velocity += gravity; // Makes character fall with gravity if not on surface
+            velocity += gravity; // Apply gravity while in the air
         }
     }
-    public void act()
-    {
+
+    public void act() {
         fall();
+        checkJump();
         checkWarp();
         checkKeys();
     }
