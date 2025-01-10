@@ -6,7 +6,7 @@ public class MyGame extends World
     public static Level level;                      
     public static int speed;                            //variable for speed of platforms 
     
-    public static boolean boost = true;                        //variable for whether boost is activated or not
+    public static boolean boost = false;                //variable for whether boost is activated or not
 
     public MyGame()
     {

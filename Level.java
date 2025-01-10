@@ -25,7 +25,7 @@ public class Level extends Actor
         enemyNum = 1 + (lvl * 2);
         
         //spawn rate and speed of platform
-        platSpawnRate = 1300;
+        platSpawnRate = 1200;
         MyGame.speed = (int) (lvl * 1.5) + 2;
 
         if(MyGame.boost)
@@ -77,7 +77,7 @@ public class Level extends Actor
             //if last platform, set xPos to be center of screen
             if(platformNum == 0)
             {
-                xPos = 0 + platform.getImage().getWidth() / 2;
+                xPos = world.getWidth() /2;
             }
 
             //add new platform
@@ -94,7 +94,7 @@ public class Level extends Actor
     private void coinSpawn(int xPos)
     {
         //spawn coins at 10% spawn rate (10% chance random number <= 10)
-        if(Greenfoot.getRandomNumber(100) <= 10)
+        if(Greenfoot.getRandomNumber(100) <= 100)
         {
             world.addObject(new Coin(), xPos, -80);
         }
@@ -109,7 +109,7 @@ public class Level extends Actor
         {
             MyGame.boost = false;
             MyGame.speed = (int) (lvl * 1.5) + 2;
-            platSpawnRate = 1300;
+            platSpawnRate = 1200;
         }
 
     }
