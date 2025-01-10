@@ -20,12 +20,13 @@ public class Level extends Actor
     {
         this.lvl = lvl;
 
-        //set number of platforms & speed for level
+        //num of platforms and enemies in the level
         platformNum = 10 + (lvl * 10);
+        enemyNum = 1 + (lvl * 2);
+        
+        //spawn rate and speed of platform
         platSpawnRate = 1300;
         MyGame.speed = (int) (lvl * 1.5) + 2;
-        enemyNum = 1 + (lvl * 2);
-        speed = (int) (lvl * 1.5) + 2;
 
         if(MyGame.boost)
         {
@@ -74,7 +75,10 @@ public class Level extends Actor
             Platform platform = new Platform(platformNum);
 
             //if last platform, set xPos to be center of screen
-            if(platformNum == 0){xPos = 0 + platform.getImage().getWidth() / 2;}
+            if(platformNum == 0)
+            {
+                xPos = 0 + platform.getImage().getWidth() / 2;
+            }
 
             //add new platform
             world.addObject(platform, xPos, -50);
@@ -125,7 +129,7 @@ public class Level extends Actor
             System.out.println("ENEMY " + enemyNum);
             
             //create enemy and spawn at random y value
-            Enemy enemy = new Enemy(speed);
+            Enemy enemy = new Enemy(MyGame.speed);
             world.addObject(enemy, 1, y + 50);
             enemyTimer.mark();    
         }
