@@ -17,5 +17,6 @@ public class MyGame extends World
 
     public void act()
     {
+        
     }
 }
