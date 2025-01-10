@@ -20,7 +20,9 @@ public class Avatar extends Actor {
     private boolean keyReleased = true; // Tracks if the jump key has been released
 
     private int groundLevel; // Ground level based on the world's height
-
+    
+    private int frame = 0; 
+    
     public Avatar() {
         setImage(sussyImage);
         sussyImage.scale(75, 80);
@@ -92,7 +94,15 @@ public class Avatar extends Actor {
             velocity += gravity; // Apply gravity while in the air
         }
     }
-
+    
+    public void animateRight() {
+        
+    }
+    
+    public void animateLeft() {
+        
+    }
+    
     public void act() {
         fall();
         checkJump();
