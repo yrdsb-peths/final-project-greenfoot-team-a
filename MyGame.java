@@ -2,11 +2,12 @@ import greenfoot.*;
 
 public class MyGame extends World
 {
-    public final String[] numImage = {"images"};
-    public static Level level;                      
-    public static int speed;                            //variable for speed of platforms 
+    public static Level level;                          //current level active
+    public static int speed;                            //speed of platforms 
     
-    public static boolean boost = false;                //variable for whether boost is activated or not
+    //boolean variables tracking active powerups
+    public static boolean boost = false;                
+    public static boolean shield = false;   
 
     public MyGame()
     {
@@ -21,6 +22,5 @@ public class MyGame extends World
 
     public void act()
     {
-        
     }
 }

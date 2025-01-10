@@ -3,18 +3,18 @@ import greenfoot.*;
 public class Level extends Actor
 {
     //timers
-    SimpleTimer platformTimer = new SimpleTimer();      //timer for time between platform spawns
-    SimpleTimer levelTimer = new SimpleTimer();         //timer for level length
-    SimpleTimer enemyTimer = new SimpleTimer();         //timer for time between enemy spawns
+    SimpleTimer platformTimer = new SimpleTimer();      //timer teacking time between platform spawns
+    SimpleTimer levelTimer = new SimpleTimer();         //timer tracking level length
+    SimpleTimer enemyTimer = new SimpleTimer();         //timer tracking time between enemy spawns
 
     //level variables
-    int lvl;                                            //variable for level player is on
-    int platformNum;                                    //variable counting fown platforms yet to be spawned
-    int platSpawnRate;                                  //variable for milliseconds between platform spawns
+    int lvl;                                            //level player is on
+    int platformNum;                                    //number of platforms yet to be spawned
+    int platSpawnRate;                                  //milliseconds between platform spawns
 
-    int enemyNum;                                       //variable to count number of enemies left to spawn
-
-    MyGame world;
+    int enemyNum;                                       //number of enemies left to spawn
+   
+    MyGame world;                                       
     
     public Level(int lvl)
     {
@@ -28,6 +28,7 @@ public class Level extends Actor
         platSpawnRate = 1200;
         MyGame.speed = (int) (lvl * 1.5) + 2;
 
+        //if boost is activated, change spawn rate and speed of platforms
         if(MyGame.boost)
         {
             platSpawnRate = 500;
@@ -96,7 +97,7 @@ public class Level extends Actor
         //spawn coins at 10% spawn rate (10% chance random number <= 10)
         if(Greenfoot.getRandomNumber(100) <= 100)
         {
-            world.addObject(new Coin(), xPos, -80);
+            world.addObject(new Coin(), xPos, -70);
         }
     }
 
