@@ -29,7 +29,7 @@ public class Label extends Actor
     }
     
     public void setText(String text) {
-        image = new GreenfootImage(text, 15, Color.BLACK, null);
+        image = new GreenfootImage(text, 13, Color.BLACK, null);
         setImage(image);
     }
 }
