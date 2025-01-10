@@ -2,13 +2,18 @@ import greenfoot.*;
 
 public class Level extends Actor
 {
+    //timers
     SimpleTimer platformTimer = new SimpleTimer();      //timer for time between platform spawns
     SimpleTimer levelTimer = new SimpleTimer();         //timer for level length
+    SimpleTimer enemyTimer = new SimpleTimer();         //timer for time between enemy spawns
 
+    //level variables
     int lvl;                                            //variable for level player is on
     int platformNum;                                    //variable counting fown platforms yet to be spawned
     int platSpawnRate;                                  //variable for milliseconds between platform spawns
-    
+
+    int enemyNum;                                       //variable to count number of enemies left to spawn
+
     MyGame world;
     
     public Level(int lvl)
@@ -19,6 +24,8 @@ public class Level extends Actor
         platformNum = 10 + (lvl * 10);
         platSpawnRate = 1300;
         MyGame.speed = (int) (lvl * 1.5) + 2;
+        enemyNum = 1 + (lvl * 2);
+        speed = (int) (lvl * 1.5) + 2;
 
         if(MyGame.boost)
         {
@@ -29,6 +36,7 @@ public class Level extends Actor
         //start timers
         levelTimer.mark();
         platformTimer.mark();
+        enemyTimer.mark();
     }
 
     public void act()
@@ -37,6 +45,7 @@ public class Level extends Actor
 
         spawnPlatform();
         removeBoost();
+        spawnEnemy();
 
         //remove last platform if space is pressed and start next level
         if(platformNum == 0 && Greenfoot.isKeyDown("SPACE"))
@@ -99,5 +108,26 @@ public class Level extends Actor
             platSpawnRate = 1300;
         }
 
+    }
+    
+    /** 
+     * spawn enemy moving right to left at random y value near the uppper
+     * half of the screen
+     */
+    private void spawnEnemy()
+    {
+        //spawn enemy every 5000 millis
+        if(enemyTimer.millisElapsed() >= 5000 && enemyNum > 0)
+        {
+            int y = Greenfoot.getRandomNumber(300);
+            
+            enemyNum--;
+            System.out.println("ENEMY " + enemyNum);
+            
+            //create enemy and spawn at random y value
+            Enemy enemy = new Enemy(speed);
+            world.addObject(enemy, 1, y + 50);
+            enemyTimer.mark();    
+        }
     }
 }
