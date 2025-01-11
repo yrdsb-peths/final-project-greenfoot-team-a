@@ -18,6 +18,7 @@ public class Avatar extends Actor {
     private boolean isJumping = false; // Tracks if the character is in the air
     private boolean keyReleased = true; // Tracks if the jump key has been released
     private boolean isDead = false;
+    private boolean isDamaged = false;
 
     // Image variables
     GreenfootImage[] idleRight = new GreenfootImage[6];
@@ -28,68 +29,92 @@ public class Avatar extends Actor {
     GreenfootImage[] jumpRight = new GreenfootImage[7];
     GreenfootImage[] jumpLeft = new GreenfootImage[7];
     
-    GreenfootImage[] deathAnimation = new GreenfootImage[7];
+    GreenfootImage[] deathRight = new GreenfootImage[7];
+    GreenfootImage[] deathLeft = new GreenfootImage[7];
+    
+    GreenfootImage[] damageRight = new GreenfootImage[4];
+    GreenfootImage[] damageLeft = new GreenfootImage[4];
     
     GreenfootImage sussy = new GreenfootImage("images/sussy.png");
+    
     // Variables to handle direction cat is facing
     String facing = "right";
     Boolean isMoving = false;
     SimpleTimer animationTimer = new SimpleTimer();
 
     public Avatar() {
-    
         // Load idleRight images (starting from 0 to 5)
-        for(int i = 0; i < 6; i++) {  // Fixed the starting index here
+        for (int i = 0; i < 6; i++) {  // Fixed the starting index here
             idleRight[i] = new GreenfootImage("images/sprites/avatar/idle/idle" + (i + 1) + ".png");
             idleRight[i].scale(100, 100);
         }
-    
+
         // Load idleLeft images (mirroring them horizontally)
-        for(int i = 0; i < 6; i++) {  
+        for (int i = 0; i < 6; i++) {  
             idleLeft[i] = new GreenfootImage("images/sprites/avatar/idle/idle" + (i + 1) + ".png");
             idleLeft[i].mirrorHorizontally();
             idleLeft[i].scale(100, 100); 
         }
-    
+
         // Load runRight images
-        for(int i = 0; i < 6; i++) {
+        for (int i = 0; i < 6; i++) {
             runRight[i] = new GreenfootImage("images/sprites/avatar/run/run" + (i + 1) + ".png");
             runRight[i].scale(100, 100);
         }
-    
+
         // Load runLeft images (mirroring them horizontally)
-        for(int i = 0; i < 6; i++) {
+        for (int i = 0; i < 6; i++) {
             runLeft[i] = new GreenfootImage("images/sprites/avatar/run/run" + (i + 1) + ".png");
             runLeft[i].mirrorHorizontally();
             runLeft[i].scale(100, 100); 
         }
 
         // Load jumpRight images
-        for(int i = 0; i < 7; i++) {
+        for (int i = 0; i < 7; i++) {
             jumpRight[i] = new GreenfootImage("images/sprites/avatar/jump/jump" + (i + 1) + ".png");
             jumpRight[i].scale(100, 100);
         }
 
         // Load jumpLeft images (mirroring them horizontally)
-        for(int i = 0; i < 7; i++) {
+        for (int i = 0; i < 7; i++) {
             jumpLeft[i] = new GreenfootImage("images/sprites/avatar/jump/jump" + (i + 1) + ".png");
             jumpLeft[i].mirrorHorizontally();
             jumpLeft[i].scale(100, 100); 
         }
-        
-        // Load deathAnimation images
-        for(int i = 0; i < 7; i++) {
-            deathAnimation[i] = new GreenfootImage("images/sprites/avatar/death/death" + (i + 1) + ".png");
-            deathAnimation[i].scale(100, 100);
+
+        // Load deathRight images
+        for (int i = 0; i < 7; i++) {
+            deathRight[i] = new GreenfootImage("images/sprites/avatar/death/death" + (i + 1) + ".png");
+            deathRight[i].scale(100, 100);
         }
 
-    
+        // Load deathLeft images
+        for (int i = 0; i < 7; i++) {
+            deathLeft[i] = new GreenfootImage("images/sprites/avatar/death/death" + (i + 1) + ".png");
+            deathLeft[i].mirrorHorizontally();
+            deathLeft[i].scale(100, 100);
+        }
+
+        // Load damageRight images
+        for (int i = 0; i < 4; i++) {
+            damageRight[i] = new GreenfootImage("images/sprites/avatar/damage/damage" + (i + 1) + ".png");
+            damageRight[i].scale(100, 100);
+        }
+
+        // Load damageLeft images
+        for (int i = 0; i < 4; i++) {
+            damageLeft[i] = new GreenfootImage("images/sprites/avatar/damage/damage" + (i + 1) + ".png");
+            damageLeft[i].mirrorHorizontally();
+            damageLeft[i].scale(100, 100);
+        }
+
         // Set the initial image to idleRight[0]
         setImage(idleRight[0]);
         animationTimer.mark();
     }
 
-    int imageIndex = 0;
+    private int imageIndex = 0;
+    private int damageLoops = 0;
     public void animateAvatar() {
         if (animationTimer.millisElapsed() < 100) {
             return;
@@ -98,26 +123,62 @@ public class Avatar extends Actor {
         
         // If the avatar is dead, play the death animation and stop after the last frame
         if (isDead) {
-            imageIndex = imageIndex % deathAnimation.length;
-            setImage(deathAnimation[imageIndex]);
-            imageIndex++;
-        
-            if (imageIndex >= deathAnimation.length) {
-                // Optionally, reset after the last frame
-                imageIndex = deathAnimation.length - 1; // Keep on the last frame
-                // Set the image to the last frame of the death animation
-                setImage(deathAnimation[imageIndex]);
-        
-                // You can stop the game or trigger a respawn here if needed
-                return; // Exit early, so no other animation is played
+            if (facing.equals("right")) {
+                imageIndex = imageIndex % deathRight.length;
+                setImage(deathRight[imageIndex]);
+                imageIndex++;
+
+                if (imageIndex >= deathRight.length) {
+                    // Optionally, reset after the last frame
+                    imageIndex = deathRight.length - 1; // Keep on the last frame
+                    // Set the image to the last frame of the death animation
+                    setImage(deathRight[imageIndex]);
+
+                    // You can stop the game or trigger a respawn here if needed
+                    return; // Exit early, so no other animation is played
+                }
+            } else {
+                imageIndex = imageIndex % deathLeft.length;
+                setImage(deathLeft[imageIndex]);
+                imageIndex++;
+
+                if (imageIndex >= deathLeft.length) {
+                    // Optionally, reset after the last frame
+                    imageIndex = deathLeft.length - 1; // Keep on the last frame
+                    // Set the image to the last frame of the death animation
+                    setImage(deathLeft[imageIndex]);
+
+                    // You can stop the game or trigger a respawn here if needed
+                    return; // Exit early, so no other animation is played
+                }
             }
             return; // Exit early to stop other animations from playing
         }
-    
+
+        if (isDamaged) {
+            if (facing.equals("right")) {
+                imageIndex = imageIndex % damageRight.length; // Ensure within bounds
+                setImage(damageRight[imageIndex]);
+                imageIndex++;
+            } else {
+                imageIndex = imageIndex % damageLeft.length; // Ensure within bounds
+                setImage(damageLeft[imageIndex]);
+                imageIndex++;
+            }
+            if (imageIndex >= damageRight.length || imageIndex >= damageLeft.length) {
+                damageLoops++;
+                imageIndex = 0; // Reset animation index for the next animation
+                if(damageLoops>=2){
+                    isDamaged=false;
+                    damageLoops=0;
+                }
+            }
+            return; // Exit early to prevent further updates
+        }
+
         // Other animations (jumping, idle, running) will only play if isDead is false
         // The rest of your animateAvatar method remains the same.
 
-        
         // If the avatar is jumping, show the 'sussy' image
         if (isJumping) {
             if (facing.equals("right")) {
@@ -131,7 +192,7 @@ public class Avatar extends Actor {
             }
             return; // Exit early to prevent further updates
         }
-    
+
         // Handle idle animations
         if (!isMoving) {
             if (facing.equals("right")) {
@@ -145,7 +206,7 @@ public class Avatar extends Actor {
             }
             return; // Prevent running animation logic
         }
-    
+
         // Handle running animations
         if (isMoving) {
             if (facing.equals("right")) {
@@ -161,8 +222,6 @@ public class Avatar extends Actor {
         }
     }
 
-
-
     public void checkWarp() {
         if (getX() < 1) {
             setLocation(getWorld().getWidth() - 2, getY()); // Warp to the right side
@@ -173,28 +232,31 @@ public class Avatar extends Actor {
     }
 
     public void checkKeys() {
-        if(Greenfoot.isKeyDown("D") && !isDead){
-            isDead=true;
+        if (Greenfoot.isKeyDown("D") && !isDead) {
+            isDead = true;
             imageIndex = 0;
         }
-            
+        if (Greenfoot.isKeyDown("F") && !isDamaged) {
+            isDamaged = true;
+            imageIndex = 0;
+        }
+
         if (Greenfoot.isKeyDown("left") && !isDead) {
             move(-5);
             facing = "left";
-            if(isMoving == false) {
+            if (isMoving == false) {
                 isMoving = true;
                 imageIndex = 0;
             }
         } else if (Greenfoot.isKeyDown("right") && !isDead) {
             move(5);
             facing = "right";
-            if(isMoving == false) {
+            if (isMoving == false) {
                 isMoving = true;
                 imageIndex = 0;
             }
         } else {
-            if(isMoving == true)
-            {
+            if (isMoving == true) {
                 isMoving = false;
                 imageIndex = 0;
             }
