@@ -2,12 +2,17 @@ import greenfoot.*;
 
 public class MyGame extends World
 {
-    public static Level level;
+    public static Level level;                          //current level active
+    public static int speed;                            //speed of platforms 
+    
+    //boolean variables tracking active powerups
+    public static boolean boost = false;                
+    public static boolean shield = false;   
 
     public MyGame()
     {
-        super(400,600,1);
-        
+        super(400,600,1, false);
+
         setBackground(new GreenfootImage("FinalISPBackground.png"));
         Greenfoot.setWorld(new MenuScreen());
 
@@ -17,6 +22,5 @@ public class MyGame extends World
 
     public void act()
     {
-        
     }
 }
