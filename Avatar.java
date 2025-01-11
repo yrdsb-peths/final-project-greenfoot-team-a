@@ -17,12 +17,18 @@ public class Avatar extends Actor {
     private int jumpCharge = 0; // Tracks how long the jump key is held
     private boolean isJumping = false; // Tracks if the character is in the air
     private boolean keyReleased = true; // Tracks if the jump key has been released
+    private boolean isDead = false;
 
     // Image variables
     GreenfootImage[] idleRight = new GreenfootImage[6];
     GreenfootImage[] idleLeft = new GreenfootImage[6];
     GreenfootImage[] runRight = new GreenfootImage[6];
     GreenfootImage[] runLeft = new GreenfootImage[6];
+
+    GreenfootImage[] jumpRight = new GreenfootImage[7];
+    GreenfootImage[] jumpLeft = new GreenfootImage[7];
+    
+    GreenfootImage sussy = new GreenfootImage("images/sussy.png");
     // Variables to handle direction cat is facing
     String facing = "right";
     Boolean isMoving = false;
@@ -55,6 +61,19 @@ public class Avatar extends Actor {
             runLeft[i].mirrorHorizontally();
             runLeft[i].scale(100, 100); 
         }
+
+        // Load jumpRight images
+        for(int i = 0; i < 7; i++) {
+            jumpRight[i] = new GreenfootImage("images/sprites/avatar/jump/jump" + (i + 1) + ".png");
+            jumpRight[i].scale(100, 100);
+        }
+
+        // Load jumpLeft images (mirroring them horizontally)
+        for(int i = 0; i < 7; i++) {
+            jumpLeft[i] = new GreenfootImage("images/sprites/avatar/jump/jump" + (i + 1) + ".png");
+            jumpLeft[i].mirrorHorizontally();
+            jumpLeft[i].scale(100, 100); 
+        }
     
         // Set the initial image to idleRight[0]
         setImage(idleRight[0]);
@@ -62,40 +81,56 @@ public class Avatar extends Actor {
     }
 
     int imageIndex = 0;
-    public void animateAvatar()
-    {
-        if(animationTimer.millisElapsed() < 100)
-        {
+    public void animateAvatar() {
+        if (animationTimer.millisElapsed() < 100) {
             return;
         }
         animationTimer.mark();
-        if(isMoving == false)
-        {
-            if(facing.equals("right"))
-            {
-                setImage(idleRight[imageIndex]);
-                imageIndex = (imageIndex + 1) % idleRight.length;
+        
+        // If the avatar is jumping, show the 'sussy' image
+        if (isJumping) {
+            if (facing.equals("right")) {
+                imageIndex = imageIndex % jumpRight.length; // Ensure within bounds
+                setImage(jumpRight[imageIndex]);
+                imageIndex++;
+            } else {
+                imageIndex = imageIndex % jumpLeft.length; // Ensure within bounds
+                setImage(jumpLeft[imageIndex]);
+                imageIndex++;
             }
-            else
-            {
-                setImage(idleLeft[imageIndex]);
-                imageIndex = (imageIndex + 1) % idleLeft.length;
-            }
+            return; // Exit early to prevent further updates
         }
-        else
-        {
-            if(facing.equals("right"))
-            {
+    
+        // Handle idle animations
+        if (!isMoving) {
+            if (facing.equals("right")) {
+                imageIndex = imageIndex % idleRight.length; // Ensure within bounds
+                setImage(idleRight[imageIndex]);
+                imageIndex++;
+            } else {
+                imageIndex = imageIndex % idleLeft.length; // Ensure within bounds
+                setImage(idleLeft[imageIndex]);
+                imageIndex++;
+            }
+            return; // Prevent running animation logic
+        }
+    
+        // Handle running animations
+        if (isMoving) {
+            if (facing.equals("right")) {
+                imageIndex = imageIndex % runRight.length; // Ensure within bounds
                 setImage(runRight[imageIndex]);
-                imageIndex = (imageIndex + 1) % runRight.length;
-            }
-            else
-            {
+                imageIndex++;
+            } else {
+                imageIndex = imageIndex % runLeft.length; // Ensure within bounds
                 setImage(runLeft[imageIndex]);
-                imageIndex = (imageIndex + 1) % runLeft.length;
+                imageIndex++;
             }
+            return;
         }
     }
+
+
 
     public void checkWarp() {
         if (getX() < 1) {
@@ -107,6 +142,10 @@ public class Avatar extends Actor {
     }
 
     public void checkKeys() {
+        if(Greenfoot.isKeyDown("d") && !isDead){
+            isDead=true;
+        }
+            
         if (Greenfoot.isKeyDown("left")) {
             move(-5);
             facing = "left";
@@ -179,6 +218,5 @@ public class Avatar extends Actor {
         checkJump();
         checkWarp();
         checkKeys();
-        System.out.println(isMoving);
     }
 }
