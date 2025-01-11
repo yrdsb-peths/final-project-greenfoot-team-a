@@ -28,6 +28,8 @@ public class Avatar extends Actor {
     GreenfootImage[] jumpRight = new GreenfootImage[7];
     GreenfootImage[] jumpLeft = new GreenfootImage[7];
     
+    GreenfootImage[] deathAnimation = new GreenfootImage[7];
+    
     GreenfootImage sussy = new GreenfootImage("images/sussy.png");
     // Variables to handle direction cat is facing
     String facing = "right";
@@ -74,6 +76,13 @@ public class Avatar extends Actor {
             jumpLeft[i].mirrorHorizontally();
             jumpLeft[i].scale(100, 100); 
         }
+        
+        // Load deathAnimation images
+        for(int i = 0; i < 7; i++) {
+            deathAnimation[i] = new GreenfootImage("images/sprites/avatar/death/death" + (i + 1) + ".png");
+            deathAnimation[i].scale(100, 100);
+        }
+
     
         // Set the initial image to idleRight[0]
         setImage(idleRight[0]);
@@ -86,6 +95,28 @@ public class Avatar extends Actor {
             return;
         }
         animationTimer.mark();
+        
+        // If the avatar is dead, play the death animation and stop after the last frame
+        if (isDead) {
+            imageIndex = imageIndex % deathAnimation.length;
+            setImage(deathAnimation[imageIndex]);
+            imageIndex++;
+        
+            if (imageIndex >= deathAnimation.length) {
+                // Optionally, reset after the last frame
+                imageIndex = deathAnimation.length - 1; // Keep on the last frame
+                // Set the image to the last frame of the death animation
+                setImage(deathAnimation[imageIndex]);
+        
+                // You can stop the game or trigger a respawn here if needed
+                return; // Exit early, so no other animation is played
+            }
+            return; // Exit early to stop other animations from playing
+        }
+    
+        // Other animations (jumping, idle, running) will only play if isDead is false
+        // The rest of your animateAvatar method remains the same.
+
         
         // If the avatar is jumping, show the 'sussy' image
         if (isJumping) {
@@ -142,18 +173,19 @@ public class Avatar extends Actor {
     }
 
     public void checkKeys() {
-        if(Greenfoot.isKeyDown("d") && !isDead){
+        if(Greenfoot.isKeyDown("D") && !isDead){
             isDead=true;
+            imageIndex = 0;
         }
             
-        if (Greenfoot.isKeyDown("left")) {
+        if (Greenfoot.isKeyDown("left") && !isDead) {
             move(-5);
             facing = "left";
             if(isMoving == false) {
                 isMoving = true;
                 imageIndex = 0;
             }
-        } else if (Greenfoot.isKeyDown("right")) {
+        } else if (Greenfoot.isKeyDown("right") && !isDead) {
             move(5);
             facing = "right";
             if(isMoving == false) {
@@ -172,7 +204,7 @@ public class Avatar extends Actor {
     public void checkJump() {
         boolean jumpKeyHeld = Greenfoot.isKeyDown("up");
 
-        if (jumpKeyHeld && keyReleased) {
+        if (jumpKeyHeld && keyReleased && !isDead) {
             if (!isJumping) {
                 velocity = minJumpVelocity; // Start the jump
                 isJumping = true;
