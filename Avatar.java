@@ -10,6 +10,7 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 public class Avatar extends Actor {
     GreenfootImage sussyImage = new GreenfootImage("images/sussy.png");
 
+    // Gameplay variables
     private int velocity = 0; // The character's vertical velocity
     private int gravity = 1; // Gravity pulling the character down
     private int maxJumpVelocity = -15; // Maximum upward velocity for a fully charged jump
@@ -17,12 +18,15 @@ public class Avatar extends Actor {
     private int jumpCharge = 0; // Tracks how long the jump key is held
     private boolean isJumping = false; // Tracks if the character is in the air
     private boolean keyReleased = true; // Tracks if the jump key has been released
-    private boolean isDead = false;
-    private boolean isDamaged = false;
+    private boolean isDead = false; // Tracks if Avatar dies
+    private boolean isDamaged = false; // Tracks if Avatar is damaged
+    private boolean isMoving = false;
+    private String facing = "right";
 
     // Image variables
     GreenfootImage[] idleRight = new GreenfootImage[6];
     GreenfootImage[] idleLeft = new GreenfootImage[6];
+    
     GreenfootImage[] runRight = new GreenfootImage[6];
     GreenfootImage[] runLeft = new GreenfootImage[6];
 
@@ -35,21 +39,17 @@ public class Avatar extends Actor {
     GreenfootImage[] damageRight = new GreenfootImage[4];
     GreenfootImage[] damageLeft = new GreenfootImage[4];
     
-    GreenfootImage sussy = new GreenfootImage("images/sussy.png");
-    
-    // Variables to handle direction cat is facing
-    String facing = "right";
-    Boolean isMoving = false;
+    // Animation timer
     SimpleTimer animationTimer = new SimpleTimer();
 
     public Avatar() {
-        // Load idleRight images (starting from 0 to 5)
+        // Load idleRight image
         for (int i = 0; i < 6; i++) {  // Fixed the starting index here
             idleRight[i] = new GreenfootImage("images/sprites/avatar/idle/idle" + (i + 1) + ".png");
             idleRight[i].scale(100, 100);
         }
 
-        // Load idleLeft images (mirroring them horizontally)
+        // Load idleLeft images
         for (int i = 0; i < 6; i++) {  
             idleLeft[i] = new GreenfootImage("images/sprites/avatar/idle/idle" + (i + 1) + ".png");
             idleLeft[i].mirrorHorizontally();
@@ -62,7 +62,7 @@ public class Avatar extends Actor {
             runRight[i].scale(100, 100);
         }
 
-        // Load runLeft images (mirroring them horizontally)
+        // Load runLeft images
         for (int i = 0; i < 6; i++) {
             runLeft[i] = new GreenfootImage("images/sprites/avatar/run/run" + (i + 1) + ".png");
             runLeft[i].mirrorHorizontally();
@@ -75,7 +75,7 @@ public class Avatar extends Actor {
             jumpRight[i].scale(100, 100);
         }
 
-        // Load jumpLeft images (mirroring them horizontally)
+        // Load jumpLeft images
         for (int i = 0; i < 7; i++) {
             jumpLeft[i] = new GreenfootImage("images/sprites/avatar/jump/jump" + (i + 1) + ".png");
             jumpLeft[i].mirrorHorizontally();
@@ -113,8 +113,10 @@ public class Avatar extends Actor {
         animationTimer.mark();
     }
 
-    int imageIndex = 0;
+    private int imageIndex = 0;
+    private int damageLoops = 0;
     public void animateAvatar() {
+        // Ensures the loop breaks when enough time is passed
         if (animationTimer.millisElapsed() < 100) {
             return;
         }
@@ -128,13 +130,11 @@ public class Avatar extends Actor {
                 imageIndex++;
 
                 if (imageIndex >= deathRight.length) {
-                    // Optionally, reset after the last frame
                     imageIndex = deathRight.length - 1; // Keep on the last frame
                     // Set the image to the last frame of the death animation
                     setImage(deathRight[imageIndex]);
-
-                    // You can stop the game or trigger a respawn here if needed
-                    return; // Exit early, so no other animation is played
+                    // Stops game here
+                    return;
                 }
             } else {
                 imageIndex = imageIndex % deathLeft.length;
@@ -142,64 +142,77 @@ public class Avatar extends Actor {
                 imageIndex++;
 
                 if (imageIndex >= deathLeft.length) {
-                    // Optionally, reset after the last frame
                     imageIndex = deathLeft.length - 1; // Keep on the last frame
                     // Set the image to the last frame of the death animation
                     setImage(deathLeft[imageIndex]);
-
-                    // You can stop the game or trigger a respawn here if needed
-                    return; // Exit early, so no other animation is played
+                    // Stops game here
+                    return;
                 }
             }
-            return; // Exit early to stop other animations from playing
+            return;
         }
-
+        
+        // Loops through the damaged animation here
         if (isDamaged) {
-            imageIndex = imageIndex % damageRight.length;
-            setImage(damageRight[imageIndex]);
-            imageIndex++;
-            return; // Exit early to stop other animations from playing
-        }
-
-        // Other animations (jumping, idle, running) will only play if isDead is false
-        // The rest of your animateAvatar method remains the same.
-
-        // If the avatar is jumping, show the 'sussy' image
-        if (isJumping) {
             if (facing.equals("right")) {
-                imageIndex = imageIndex % jumpRight.length; // Ensure within bounds
-                setImage(jumpRight[imageIndex]);
+                imageIndex = imageIndex % damageRight.length;
+                setImage(damageRight[imageIndex]);
                 imageIndex++;
             } else {
-                imageIndex = imageIndex % jumpLeft.length; // Ensure within bounds
-                setImage(jumpLeft[imageIndex]);
+                imageIndex = imageIndex % damageLeft.length;
+                setImage(damageLeft[imageIndex]);
                 imageIndex++;
+            }
+
+            // Check if two loops of the damage animation have completed
+            if (imageIndex >= damageRight.length || imageIndex >= damageLeft.length) {
+                damageLoops++; // Increase loop count
+                imageIndex = 0; // Reset animation index for the next loop
+
+                if (damageLoops >= 2) {
+                    isDamaged = false; // Turn off the damage state after two loops
+                    damageLoops = 0; // Reset loop count for next damage animation
+                }
             }
             return; // Exit early to prevent further updates
         }
 
-        // Handle idle animations
+        // Loops through the jumping animations here
+        if (isJumping) {
+            if (facing.equals("right")) {
+                imageIndex = imageIndex % jumpRight.length;
+                setImage(jumpRight[imageIndex]);
+                imageIndex++;
+            } else {
+                imageIndex = imageIndex % jumpLeft.length;
+                setImage(jumpLeft[imageIndex]);
+                imageIndex++;
+            }
+            return;
+        }
+
+        // Loops idle animations
         if (!isMoving) {
             if (facing.equals("right")) {
-                imageIndex = imageIndex % idleRight.length; // Ensure within bounds
+                imageIndex = imageIndex % idleRight.length;
                 setImage(idleRight[imageIndex]);
                 imageIndex++;
             } else {
-                imageIndex = imageIndex % idleLeft.length; // Ensure within bounds
+                imageIndex = imageIndex % idleLeft.length;
                 setImage(idleLeft[imageIndex]);
                 imageIndex++;
             }
-            return; // Prevent running animation logic
+            return;
         }
 
-        // Handle running animations
+        // Loops running animations
         if (isMoving) {
             if (facing.equals("right")) {
-                imageIndex = imageIndex % runRight.length; // Ensure within bounds
+                imageIndex = imageIndex % runRight.length;
                 setImage(runRight[imageIndex]);
                 imageIndex++;
             } else {
-                imageIndex = imageIndex % runLeft.length; // Ensure within bounds
+                imageIndex = imageIndex % runLeft.length;
                 setImage(runLeft[imageIndex]);
                 imageIndex++;
             }
@@ -209,40 +222,41 @@ public class Avatar extends Actor {
 
     public void checkWarp() {
         if (getX() < 1) {
-            setLocation(getWorld().getWidth() - 2, getY()); // Warp to the right side
+            setLocation(getWorld().getWidth() - 2, getY()); // Warp to the right side if off screen
         }
         if (getX() > getWorld().getWidth() - 2) {
-            setLocation(0, getY()); // Wrap to the left side
+            setLocation(0, getY()); // Wrap to the left side if off screen
         }
     }
 
     public void checkKeys() {
         if (Greenfoot.isKeyDown("D") && !isDead) {
-            isDead = true;
+            isDead = true; // Changes boolean given condition
             imageIndex = 0;
         }
+        
         if (Greenfoot.isKeyDown("F") && !isDamaged) {
-            isDamaged = true;
+            isDamaged = true; // Changes boolean given condition
             imageIndex = 0;
         }
 
         if (Greenfoot.isKeyDown("left") && !isDead) {
-            move(-5);
-            facing = "left";
-            if (isMoving == false) {
-                isMoving = true;
-                imageIndex = 0;
+            move(-5); // Moves to the left
+            facing = "left"; // Changes variable to "left"
+            if (!isMoving) {
+                isMoving = true; // Changes boolean to moving
+                imageIndex = 0; // Resets the animation
             }
         } else if (Greenfoot.isKeyDown("right") && !isDead) {
-            move(5);
-            facing = "right";
-            if (isMoving == false) {
-                isMoving = true;
-                imageIndex = 0;
+            move(5); // Moves to the right
+            facing = "right"; // Changes variable to "right"
+            if (!isMoving) {
+                isMoving = true; // Changes boolean to moving
+                imageIndex = 0; // resets the animation
             }
         } else {
-            if (isMoving == true) {
-                isMoving = false;
+            if (isMoving) {
+                isMoving = false; // Changes boolean if no input detected
                 imageIndex = 0;
             }
         }
