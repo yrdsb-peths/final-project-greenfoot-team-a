@@ -304,12 +304,21 @@ public class Avatar extends Actor {
             velocity += gravity; // Apply gravity while in the air
         }
     }
-
+    
+    public void checkDeath() {
+        MyGame world = (MyGame) getWorld(); 
+        if(isTouching(Enemy.class)) {
+            isDead = true; 
+            Greenfoot.setWorld(new GameOver());
+        }
+    }
+    
     public void act() {
         fall();
         animateAvatar();
         checkJump();
         checkWarp();
         checkKeys();
+        checkDeath();
     }
 }
