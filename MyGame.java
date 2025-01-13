@@ -1,41 +1,26 @@
 import greenfoot.*;
 
-public class MyGame extends World{
+public class MyGame extends World
+{
+    public static Level level;                          //current level active
+    public static int speed;                            //speed of platforms 
+    
+    //boolean variables tracking active powerups
+    public static boolean boost = false;                
+    public static boolean shield = false;   
 
-    SimpleTimer platformTimer = new SimpleTimer();            //timer that keeps track of time between platform spawns 
-
-    public static int speed = 3;                              //int for speed of platforms
-    int lvl = 1;                                              //int for what level player is on
-    int platformNum;
-  
     public MyGame()
     {
-        super(400,600,1);
-        platformTimer.mark();
+        super(400,600,1, false);
+
         setBackground(new GreenfootImage("FinalISPBackground.png"));
         Greenfoot.setWorld(new MenuScreen());
+
+        level = new Level(1);
+        addObject(level, 0,0);
     }
 
     public void act()
     {
-        if(platformTimer.millisElapsed() >=1000)
-        {
-            addPlatform();
-            platformTimer.mark();
-        }
-    }
-
-    /**
-     * add platform to top of screen at random x value
-     */
-    public void addPlatform()
-    {
-        Platform platform = new Platform();
-        addObject(platform, Greenfoot.getRandomNumber(getWidth()), -800);
-    }
-
-    public void displayLvl()
-    {
-        
     }
 }
