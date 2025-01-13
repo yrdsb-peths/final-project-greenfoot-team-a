@@ -18,8 +18,9 @@ public class Avatar extends Actor {
     private int jumpCharge = 0; // Tracks how long the jump key is held
     private boolean isJumping = false; // Tracks if the character is in the air
     private boolean keyReleased = true; // Tracks if the jump key has been released
-    private boolean isDead = false; // Tracks if Avatar dies
-    private boolean isDamaged = false; // Tracks if Avatar is damaged
+    public static boolean isDead = false; // Tracks if Avatar dies
+    public static boolean isDamaged = false; // Tracks if Avatar is damaged
+    public static boolean onGround = true;
     private boolean isMoving = false;
     private String facing = "right";
 
@@ -234,6 +235,12 @@ public class Avatar extends Actor {
             isDead = true; // Changes boolean given condition
             imageIndex = 0;
         }
+        
+        if (Greenfoot.isKeyDown("D") && isDead) {
+            isDead = false;; // Changes boolean given condition
+            imageIndex = 0;
+        }
+        
         
         if (Greenfoot.isKeyDown("F") && !isDamaged) {
             isDamaged = true; // Changes boolean given condition
