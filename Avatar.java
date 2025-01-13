@@ -304,6 +304,13 @@ public class Avatar extends Actor {
             velocity += gravity; // Apply gravity while in the air
         }
     }
+    
+    public void checkCoins() {
+        MyGame world = (MyGame) getWorld();
+        if(isTouching(Coin.class)) {
+            MyGame.increaseScore(100);
+        }
+    }
 
     public void act() {
         fall();
@@ -311,5 +318,6 @@ public class Avatar extends Actor {
         checkJump();
         checkWarp();
         checkKeys();
+        checkCoins();
     }
 }
