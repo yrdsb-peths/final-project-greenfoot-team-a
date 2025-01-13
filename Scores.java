@@ -28,4 +28,8 @@ public class Scores
     public static Integer returnScoreValue(int attempt) {
         return scores.get(attempt);
     }
+    
+    public static void returnFishValue(int attempt) {
+        return bonusFish.get(attempt);
+    }
 }
