@@ -305,19 +305,22 @@ public class Avatar extends Actor {
         }
     }
     
-    public void checkCoins() {
+    public void collect() {
         MyGame world = (MyGame) getWorld();
-        if(isTouching(Coin.class)) {
-            MyGame.increaseScore(100);
+        
+        Actor coin = getOneIntersectingObject(Coin.class); //assign interescting coin an actor
+        if(coin != null) {
+            getWorld().removeObject(coin); //remove coin actor that interesects with avatar
+            MyGame.increaseScore(100); //increase score
         }
     }
-
+    
     public void act() {
         fall();
         animateAvatar();
         checkJump();
         checkWarp();
         checkKeys();
-        checkCoins();
+        collect();
     }
 }

@@ -2,6 +2,7 @@ import java.util.HashMap;
 
 public class Scores  
 {
+    //static map to track multiple attempts and their scores
     public static HashMap<Integer, Integer> scores = new HashMap<>();
     public static HashMap<Integer, Integer> bonusFish = new HashMap<>();
     
@@ -29,7 +30,7 @@ public class Scores
         return scores.get(attempt);
     }
     
-    public static void returnFishValue(int attempt) {
+    public static Integer returnFishValue(int attempt) {
         return bonusFish.get(attempt);
     }
 }

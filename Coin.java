@@ -30,7 +30,7 @@ public class Coin extends Actor
 
         setLocation(getX(), getY() + MyGame.speed);
     }
-
+    
     private void animate()
     {
         //change image to next frame

@@ -98,7 +98,7 @@ public class Level extends Actor
         if(Greenfoot.getRandomNumber(100) <= 100)
         {
             world.addObject(new Coin(), xPos, -70);
-        }
+        } 
     }
 
     /**
@@ -127,7 +127,6 @@ public class Level extends Actor
             int y = Greenfoot.getRandomNumber(300);
             
             enemyNum--;
-            System.out.println("ENEMY " + enemyNum);
             
             //create enemy and spawn at random y value
             Enemy enemy = new Enemy(MyGame.speed);
