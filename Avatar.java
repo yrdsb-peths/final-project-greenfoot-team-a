@@ -8,8 +8,6 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  */
 
 public class Avatar extends Actor {
-    GreenfootImage sussyImage = new GreenfootImage("images/sussy.png");
-
     // Gameplay variables
     private int velocity = 0; // The character's vertical velocity
     private int gravity = 1; // Gravity pulling the character down
@@ -305,11 +303,13 @@ public class Avatar extends Actor {
         }
     }
     
-    public void checkDeath() {
-        MyGame world = (MyGame) getWorld(); 
-        if(isTouching(Enemy.class)) {
-            isDead = true; 
-            Greenfoot.setWorld(new GameOver());
+    public void collect() {
+        MyGame world = (MyGame) getWorld();
+        
+        Actor coin = getOneIntersectingObject(Coin.class); //assign interescting coin an actor
+        if(coin != null) {
+            getWorld().removeObject(coin); //remove coin actor that interesects with avatar
+            MyGame.increaseScore(100); //increase score
         }
     }
     
@@ -319,6 +319,6 @@ public class Avatar extends Actor {
         checkJump();
         checkWarp();
         checkKeys();
-        checkDeath();
+        collect();
     }
 }
