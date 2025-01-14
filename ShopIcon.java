@@ -18,6 +18,9 @@ public class ShopIcon extends Actor
     
     public void act()
     {
-        
+        if(getY() <= 500)
+        {
+            setLocation(getX(), getY() + MyGame.speed);
+        }
     }
 }

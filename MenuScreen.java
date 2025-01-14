@@ -1,37 +1,45 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
-/**
- * Write a description of class MenuScreen here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
- */
 public class MenuScreen extends World
 {
-
     /**
      * Constructor for objects of class MenuScreen.
      * 
      */
     public MenuScreen()
     {    
-        // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
-        super(600, 400, 1); 
+        // Create a new world with 400x600 cells with a cell size of 1x1 pixels.
+        super(400, 600, 1); 
+
+        //add game title
+        setBackground(new GreenfootImage("mainBackground.png"));
+        addObject(new TitleLabel("Welcome to", 45),200, 150); 
+        addObject(new TitleLabel("SCAREDY CAT", 55), 200, 200);
+        addObject(new TitleLabel("Press the Start Button", 30),200, 320);
+        addObject(new TitleLabel("to read the Instructions!", 30), 200, 350);
         
-       
-         
-        setBackground(new GreenfootImage("FinalISPBackground.png"));
-        addObject(new Label ("Welcome to the __________ Game!"),300, 200); 
-        addObject(new Label ("Click the Start Button to read the instructions and begin the game!"),300, 220);
-        addObject(new Button(this::startInstructions), 300, 270); 
+        //add start button
+        addObject(new Button(this::startInstructions), 200, 450);
+        addObject(new TitleLabel ("Start", 25), 197, 450);
         
-        String startTwo = "Start";
-        addObject(new Label ("Start"), 300, 270);
+        prepare();
     }
 
     private void startInstructions() 
     {
         Greenfoot.setWorld(new InstructionScreen());
+    }
+    
+    /**
+     * Prepare the world for the start of the program.
+     * That is: create the initial objects and add them to the world.
+     */
+    private void prepare()
+    {
+        //add picture of avatar
+        Avatar avatar = new Avatar();
+        avatar.sleepFor(-1); //stop the avatar actor from calling act()
+        addObject(avatar, 200, 260);
     }
 }
 

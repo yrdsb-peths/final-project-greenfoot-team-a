@@ -23,7 +23,7 @@ public class Level extends Actor
         //num of platforms and enemies in the level
         platformNum = 10 + (lvl * 10);
         enemyNum = 1 + (lvl * 2);
-        
+
         //spawn rate and speed of platform
         platSpawnRate = 1000;
         MyGame.speed = (int) (lvl * 1.5) + 2;
