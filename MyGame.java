@@ -12,8 +12,11 @@ public class MyGame extends World
     public MyGame()
     {
         super(400,600,1, false);
-
+        
+        //Set background to Background image of the game we chose
         setBackground(new GreenfootImage("FinalISPBackground.png"));
+        
+        //Change world to MenuScreen
         Greenfoot.setWorld(new MenuScreen());
 
         level = new Level(1);
