@@ -21,9 +21,11 @@ public class MyGame extends World
 
         level = new Level(1);
         addObject(level, 0,0);
+        
     }
 
     public void act()
     {
     }
 }
+

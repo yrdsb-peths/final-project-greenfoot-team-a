@@ -62,7 +62,7 @@ public class InstructionScreen extends World
     }
     
     //Starts the game and goes to game screen
-    private void startGame() {
+    public void startGame() {
         Greenfoot.setWorld(new MyGame());
     }
 

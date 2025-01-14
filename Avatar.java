@@ -22,6 +22,10 @@ public class Avatar extends Actor {
     private boolean isDamaged = false; // Tracks if Avatar is damaged
     private boolean isMoving = false;
     private String facing = "right";
+    
+    private boolean isInShop = false; //Keeping track of whether player is in shop
+    private int shopIconProximity = 50; //Proximity to shop
+    
 
     // Image variables
     GreenfootImage[] idleRight = new GreenfootImage[6];
@@ -320,5 +324,19 @@ public class Avatar extends Actor {
         checkWarp();
         checkKeys();
         checkDeath();
+        checkShopInteraction(); //Check whether player is near and player interacts with shop
+    }
+    
+    
+    public void checkShopInteraction() {
+        //Checking whether player is close to shop
+        Actor shopIcon = getOneIntersectingObject(ShopIcon.class);
+        
+        if (shopIcon != null && Greenfoot.isKeyDown("enter") && !isInShop) {
+            isInShop = true;
+            MyGame world = (MyGame) getWorld();
+            world.setBackground(new GreenfootImage("shopInside.png")); //Change shop background to the inside of shop
+            Greenfoot.setWorld(new ShopWorld()); //Enter shop
+        }
     }
 }
