@@ -26,7 +26,7 @@ public class Platform extends Actor
     public void act()
     {
         //move platform down platform is last one & at bottom of screen
-        if(!(platformNum == 0 && getY() >= 600 - height))
+        if(!(platformNum == 0 && getY() > 600 - height))
         {
             setLocation(getX(), getY() + MyGame.speed);
         }
@@ -49,3 +49,4 @@ public class Platform extends Actor
         }
     }
 }
+ 
