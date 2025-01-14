@@ -2,23 +2,23 @@ import greenfoot.*;
 
 public class Platform extends Actor
 {
-
-    int type;                                            //variable for type of platform that is to be spawned (if == 0, last platform of level)
-
+    int platformNum;                 //platform number
+    int height;                      //height of image                  
     GreenfootImage[] platformImgs = {new GreenfootImage("images/sprites/platformMed.png"),          //array for possible platforms
                                      new GreenfootImage("images/sprites/platformSmall.png")};     
 
-    public Platform(int type)
+    public Platform(int platformNum)
     {
-        this.type = type;
+        GreenfootImage image = platformImgs[Greenfoot.getRandomNumber(2)];
+        image.scale(this.getImage().getWidth() * 13, this.getImage().getHeight() * 13);
         
-        GreenfootImage image = platformImgs[Greenfoot.getRandomNumber(1)];
-        image.scale(this.getImage().getWidth() * 10, this.getImage().getHeight() * 10);
+        this.platformNum = platformNum;
+        height = this.getImage().getHeight();
 
         //if last platform in level
-        if(type == 0)
+        if(platformNum == 0)
         {
-            image.scale(600, this.getImage().getHeight()* 25);
+            image.scale(800, height * 30);
         }
         setImage(image);
     }
@@ -26,7 +26,7 @@ public class Platform extends Actor
     public void act()
     {
         //move platform down platform is last one & at bottom of screen
-        if(!(type == 0 && getY() >= 600 - 20))
+        if(!(platformNum == 0 && getY() > 600 - height))
         {
             setLocation(getX(), getY() + MyGame.speed);
         }
@@ -38,10 +38,10 @@ public class Platform extends Actor
      */
     private void removePlatform()
     {
-        if(type != 0)
+        if(platformNum != 0)
         {
             MyGame world = (MyGame) getWorld();
-            if(getY() >= 600 + this.getImage().getHeight() / 2)
+            if(getY() >= 600 + height / 2)
             {
 
                 world.removeObject(this);   
@@ -49,3 +49,4 @@ public class Platform extends Actor
         }
     }
 }
+ 

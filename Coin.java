@@ -14,7 +14,8 @@ public class Coin extends Actor
         for(int i = 0; i < 6; i++)
         {
             images[i] = new GreenfootImage("images/sprites/coin/coin" + (i+1)+ ".png");
-            images[i].scale(150,150);
+            images[i].scale(190,190);
+            
         }
     }
 
