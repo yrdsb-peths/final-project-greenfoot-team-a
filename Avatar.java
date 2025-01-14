@@ -8,8 +8,6 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  */
 
 public class Avatar extends Actor {
-    GreenfootImage sussyImage = new GreenfootImage("images/sussy.png");
-
     // Gameplay variables
     private int velocity = 0; // The character's vertical velocity
     private int gravity = 1; // Gravity pulling the character down

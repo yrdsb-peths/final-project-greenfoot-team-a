@@ -17,10 +17,9 @@ public class MyGame extends World
     public MyGame()
     {
         super(400,600,1, false);
-
-        setBackground(new GreenfootImage("FinalISPBackground.png"));
-        Greenfoot.setWorld(new MenuScreen());
-
+        
+        setBackground("mainBackground.png");
+        
         scoreLabel = new ScoreLabel(score, 30);
         addObject(scoreLabel, 350, 20);
         addObject(new Label("Score: ", 30), 270, 20);

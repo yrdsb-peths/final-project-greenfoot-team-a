@@ -17,7 +17,7 @@ public class ScoreLabel extends Actor
     private static final Color transparent = new Color(0,0,0,0);
     
     /**
-     * takes an int value and converts into String in the ScoreLabel
+     * takes an int value and converts into String in ScoreLabel
      */
     public ScoreLabel(int value, int fontSize) {
         this(Integer.toString(value), fontSize);
@@ -35,7 +35,7 @@ public class ScoreLabel extends Actor
     }
     
     /**
-     * sets a new int value that is converted to String
+     * sets a new int value that is converted to String in ScoreLabel
      */
     public void setValue(int value) {
         this.value = (Integer.toString(value));

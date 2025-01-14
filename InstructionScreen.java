@@ -1,53 +1,64 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
-/**
- * Write a description of class InstructionScreen here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
- */
 public class InstructionScreen extends World
 {
-
-    private String [] instructions = {
-        "To play this game, you must use the _____ buttons to jump from one platform to another",
-        "During the game, you will encounter cat enemies you must dodge and coin to collect. ",
-        "You must also choose between going into the shop for weapons",
-        "Or using a trampoline for boost for the next level",
-        "To begin the game, click the button, Next." 
+    private String [] instructions1 = {                    //first line of instructions
+        "To play this game, you must use the arrow keys",
+        "Your goal is to avoid running into the enemy birds",
+        "After completing a level, you have the option of",
+        "And that's it! Now try your best and have fun!" 
     };
     
-    private int currentIndex = 0;
-    private Label instructionLabel;
-    private Button nextButton;
+    private String [] instructions2 = {                    //second line of instructions
+        "to jump from one platform to the other.",
+        "while collecting as many coins as you can!",
+        "entering the shop and purchasing helpful items.",
+        "To begin the game, click Next"
+    };
+    
+    private int currentIndex = 0;             //tracks index of instructions
+    private Label instructionLabel1;          //label for instructions1
+    private Label instructionLabel2;          //label for instructions2
+    private Button nextButton;                //button to move between screens
 
     public InstructionScreen() {
-        super(600, 400, 1);
-        setBackground(new GreenfootImage("FinalISPBackground.png"));
-        instructionLabel = new Label(instructions[currentIndex]);
-        addObject(instructionLabel, 300, 200); 
-
-        addObject(new Button(this::previousInstruction), 90, 325); 
-        addObject(new Button(this::nextInstruction), 510, 325); 
-       
-        if(currentIndex < 3)
-        {
-            addObject(new Label("Back"), 90, 325);
-            addObject(new Label("Next"), 510, 325);
-        }
+        super(400, 600, 1);
+        setBackground(new GreenfootImage("mainBackground.png"));
         
+        //updates instructions for current index
+        instructionLabel1 = new Label(instructions1[currentIndex]);
+        instructionLabel2 = new Label(instructions2[currentIndex]);
+        addObject(instructionLabel1, 200, 175); //adds top label to the world
+        addObject(instructionLabel2, 200, 225); //adds bottom label to the world
+
+        addObject(new Button(this::previousInstruction), 75, 500); //spawn back button
+        addObject(new Button(this::nextInstruction), 330, 500);    //spawn next button
+       
+        if(currentIndex < 3) //add text to button
+        {
+            addObject(new Label("Back"), 70, 500);
+            addObject(new Label("Next"), 328, 500);
+        }
     }
 
+    /**
+     * sets the world to the previous instruction screen
+     */
     private void previousInstruction() {
-        if (currentIndex > 0) {
+        if (currentIndex <= 0) {
+            titleScreen(); //go back to title screen if on first instruction screen
+        } else {
             currentIndex--;
             updateInstruction();
         }
     }
 
+    /**
+     * sets the world to the next instruction screen
+     */
     private void nextInstruction() {
-        if (currentIndex == instructions.length - 1) {
-            startGame();
+        if (currentIndex == instructions1.length - 1) {
+            startGame(); //start the game if there are no more instructions
         }
         else
         {
@@ -60,7 +71,15 @@ public class InstructionScreen extends World
         Greenfoot.setWorld(new MyGame());
     }
 
+    private void titleScreen() {
+        Greenfoot.setWorld(new MenuScreen());
+    }
+    
+    /**
+     * changes instruction text
+     */
     private void updateInstruction() {
-        instructionLabel.setText(instructions[currentIndex]);
+        instructionLabel1.setText(instructions1[currentIndex]);
+        instructionLabel2.setText(instructions2[currentIndex]);
     }
 }
