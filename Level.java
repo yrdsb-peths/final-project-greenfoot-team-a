@@ -19,7 +19,8 @@ public class Level extends Actor
     public Level(int lvl)
     {
         this.lvl = lvl;
-
+        
+        setImage((GreenfootImage) null);
         //num of platforms and enemies in the level
         platformNum = 10 + (lvl * 10);
         enemyNum = 1 + (lvl * 2);
@@ -79,6 +80,10 @@ public class Level extends Actor
             if(platformNum == 0)
             {
                 xPos = world.getWidth() /2;
+
+                //shop spawn
+                ShopIcon shopIcon = new ShopIcon();
+                world.addObject(shopIcon, 340, -130); 
             }
 
             //add new platform
@@ -88,14 +93,14 @@ public class Level extends Actor
             coinSpawn(xPos);
         }
     }
-
+    
     /**
      * add spawn coin on platform 
      */
     private void coinSpawn(int xPos)
     {
         //spawn coins at 10% spawn rate (10% chance random number <= 10)
-        if(Greenfoot.getRandomNumber(100) <= 100)
+        if(Greenfoot.getRandomNumber(100) <= 100 && platformNum != 0)
         {
             world.addObject(new Coin(), xPos, -70);
         }
@@ -112,7 +117,6 @@ public class Level extends Actor
             MyGame.speed = (int) (lvl * 1.5) + 2;
             platSpawnRate = 1200;
         }
-
     }
     
     /** 
@@ -127,7 +131,6 @@ public class Level extends Actor
             int y = Greenfoot.getRandomNumber(300);
             
             enemyNum--;
-            System.out.println("ENEMY " + enemyNum);
             
             //create enemy and spawn at random y value
             Enemy enemy = new Enemy(MyGame.speed);

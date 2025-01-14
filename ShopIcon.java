@@ -12,12 +12,15 @@ public class ShopIcon extends Actor
     
     public ShopIcon() {
         GreenfootImage image = new GreenfootImage("images/shopOutside.png"); 
-        image.scale(50, 50);
+        image.scale(150, 150);
         setImage(image);
     }
     
     public void act()
     {
-        
+        if(getY() <= 500)
+        {
+            setLocation(getX(), getY() + MyGame.speed);
+        }
     }
 }

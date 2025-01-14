@@ -14,8 +14,6 @@ public class Platform extends Actor
         
         GreenfootImage image = platformImgs[Greenfoot.getRandomNumber(1)];
         image.scale(this.getImage().getWidth() * 10, this.getImage().getHeight() * 10);
-        
-       
 
         //if last platform in level
         if(type == 0)
@@ -24,7 +22,6 @@ public class Platform extends Actor
             
         }
         setImage(image);
-        
     }
 
     public void act()
@@ -35,13 +32,6 @@ public class Platform extends Actor
             setLocation(getX(), getY() + MyGame.speed);
         }
         removePlatform();
-        
-        //Position of shop on platform
-        if (type == 0 && getY() >= 500) { 
-            ShopIcon shopIcon = new ShopIcon();
-            getWorld().addObject(shopIcon, getX(), getY() - 50); 
-        }
-        
     }
 
     /**
