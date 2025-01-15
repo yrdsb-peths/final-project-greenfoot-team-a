@@ -11,8 +11,8 @@ public class ShopIcon extends Actor
      */
     
     public ShopIcon() {
-        GreenfootImage image = new GreenfootImage("images/sprites/shopOutside.png"); 
-        image.scale(150, 150);
+        GreenfootImage image = new GreenfootImage("images/shopOutside.png"); 
+        image.scale(200, 200);
         setImage(image);
     }
     
