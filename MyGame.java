@@ -6,7 +6,6 @@ public class MyGame extends World
     public static int speed;                  //speed of platforms 
     
     //boolean variables tracking active powerups
-    public static boolean boost = false;                
     public static boolean shield = false;   
     
     public static int score = 0;                         //track player score
@@ -14,6 +13,8 @@ public class MyGame extends World
     public static int numFish = 0;                       //track fish score
     static ScoreLabel fishLabel;                         //displays current fish count
     
+    public static boolean start = false;
+
     public MyGame()
     {
         super(400,600,1, false);

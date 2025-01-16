@@ -13,7 +13,8 @@ public class Level extends Actor
     int platSpawnRate;                                  //milliseconds between platform spawns
     int enemyNum;                                       //number of enemies left to spawn
    
-    MyGame world;                                       
+    MyGame world;  
+    Platform lastPlatform;                                     
     
     public Level(int lvl)
     {
@@ -28,13 +29,6 @@ public class Level extends Actor
         platSpawnRate = 1000;
         MyGame.speed = (int) (lvl * 1.5) + 2;
 
-        //if boost is activated, change spawn rate and speed of platforms
-        if(MyGame.boost)
-        {
-            platSpawnRate = 500;
-            MyGame.speed = 40;
-        }
-
         //start timers
         levelTimer.mark();
         platformTimer.mark();
@@ -45,20 +39,42 @@ public class Level extends Actor
     {
         world = (MyGame) getWorld();
 
-        spawnPlatform();
+        if(!(MyGame.start == false && platformNum < 7))
+        {
+            spawnPlatform();
+        }
+
         spawnEnemy();
-        removeBoost();
+        checkBoost();
 
         //remove last platform if space is pressed and start next level
-        if(platformNum == 0 && Greenfoot.isKeyDown("SPACE"))
+        if(platformNum == 0)
         {
-            world.removeObjects(world.getObjects(Platform.class));
-
             //add higher level object, remove this level
+            MyGame.start = false;
             MyGame.level = new Level(1 + lvl);
             world.addObject(MyGame.level,0,0);
             world.removeObject(this);
         }
+        if(MyGame.start == false && Greenfoot.isKeyDown("Space"))
+        {
+            MyGame.start = true;
+            world.removeObject(lastPlatform);
+        }
+    }
+
+    private void checkBoost()
+    {
+         //if boost is activated, change spawn rate and speed of platforms
+         if(!world.getObjects(Boost.class).isEmpty())
+         {
+            if(levelTimer.millisElapsed() >= 7000)
+            {
+                platSpawnRate = 500;
+                MyGame.speed = 40;
+                world.removeObjects(world.getObjects(Boost.class));
+            }
+         } 
     }
 
     /**
@@ -68,23 +84,24 @@ public class Level extends Actor
     {
         if(platformTimer.millisElapsed() >= platSpawnRate && platformNum > 0)
         {
+            System.out.println(platformNum);
             int xPos = Greenfoot.getRandomNumber(world.getWidth());
             
             platformNum--;
 
-            //create new platform object
-            Platform platform = new Platform(platformNum);
-
-            //if last platform, set xPos to be center of screen
+            //add platform to screen
             if(platformNum == 0)
             {
                 xPos = world.getWidth() /2;
+                lastPlatform = new Platform(0);
+                world.addObject(lastPlatform, world.getWidth()/2, -50);
+            }
+            else
+            {
+                world.addObject(new Platform(platformNum), xPos, -50);
             }
 
-            //add new platform
-            world.addObject(platform, xPos, -50);
             platformTimer.mark();
-
             coinSpawn(xPos);
         }
     }
@@ -94,25 +111,11 @@ public class Level extends Actor
      */
     private void coinSpawn(int xPos)
     {
-        //spawn coins at 10% spawn rate (10% chance random number <= 10)
-        if(Greenfoot.getRandomNumber(100) <= 100 && platformNum != 0)
+        //spawn coins at 15% spawn rate (15% chance random number <= 15)
+        if(Greenfoot.getRandomNumber(100) <= 15 && platformNum != 0 && MyGame.start)
         {
             world.addObject(new Coin(), xPos, -75);
         }
-    }
-
-    /**
-     * deactivate boost and return speed to normal
-     */
-    private void removeBoost()
-    {
-        if(MyGame.boost && levelTimer.millisElapsed() >= 7000)
-        {
-            MyGame.boost = false;
-            MyGame.speed = (int) (lvl * 1.5) + 2;
-            platSpawnRate = 1200;
-        }
-
     }
     
     /** 
