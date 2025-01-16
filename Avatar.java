@@ -310,7 +310,22 @@ public class Avatar extends Actor {
         if(coin != null) {
             getWorld().removeObject(coin); //remove coin actor that interesects with avatar
             MyGame.increaseScore(100); //increase score
+            MyGame.increaseCoins(); //increase coin count
         }
+    }
+    
+    public void checkShop() {
+        MyGame gameWorld = (MyGame) getWorld();
+        Label shopLabel = new Label("Press [ENTER] to enter shop", 20);
+        
+        Actor shop = getOneIntersectingObject(ShopIcon.class);
+        if(shop != null) {
+            gameWorld.addObject(shopLabel, 200, 300);
+            if(Greenfoot.isKeyDown("enter")) {
+                gameWorld.enterShop();
+            }
+        }
+        gameWorld.removeObject(shopLabel);
     }
     
     public void act() {
@@ -320,5 +335,6 @@ public class Avatar extends Actor {
         checkWarp();
         checkKeys();
         collect();
+        checkShop();
     }
 }

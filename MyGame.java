@@ -9,6 +9,7 @@ public class MyGame extends World
     public static boolean boost = false;                
     public static boolean shield = false;   
     
+    public static int numCoins = 0;                      //track number of coins
     public static int score = 0;                         //track player score
     static ScoreLabel scoreLabel;                        //displays current score
     public static int numFish = 0;                       //track fish score
@@ -38,6 +39,14 @@ public class MyGame extends World
     public void act()
     {
         
+    }
+    
+    public void enterShop() {
+        Greenfoot.setWorld(new ShopWorld(this));
+    }
+    
+    public static void increaseCoins() {
+        numCoins++;
     }
     
     public static void increaseScore(int addScore) {
