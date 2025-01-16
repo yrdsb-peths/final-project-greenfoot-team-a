@@ -32,6 +32,19 @@ public class MyGame extends World
         level = new Level(-1);
         addObject(level, 0,0);
         
+        levelSetUp();
+    }
+
+    public void act()
+    {
+        
+    }
+    
+    /**
+     * place starting platforms onto screen
+     */
+    public void levelSetUp()
+    {
         for(int i = 0; i < 6; i++)
         {
             int xPos = Greenfoot.getRandomNumber(getWidth() / 2);
@@ -41,15 +54,6 @@ public class MyGame extends World
             }
             addObject(new Platform(i, -1), xPos, 590 - (i* 110));
         }
-    }
-
-    public void act()
-    {
-        
-    }
-    
-    public void initialSetip()
-    {
     }
     
     public static void increaseScore(int addScore) {

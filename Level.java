@@ -22,12 +22,13 @@ public class Level extends Actor
         setImage((GreenfootImage)null);
 
         //num of platforms and enemies in the level
-        platformNum = 10 + (lvl * 10);
+        platformNum = 20 + (lvl * 10);
         enemyNum = 1 + (lvl * 2);
 
         //spawn rate and speed of platform
-        platSpawnRate = 1000;
-        MyGame.speed = (int) (lvl * 1.5) + 2;
+        MyGame.speed = lvl + 2;
+        platSpawnRate = (int)1800/MyGame.speed;
+
 
         //start timers
         levelTimer.mark();
@@ -39,22 +40,28 @@ public class Level extends Actor
     {
         world = (MyGame) getWorld();
         
+        spawnEnemy();                  //spawn enemy
+        checkBoost();                  //check boost status and start or end boost
         
-        if(!(MyGame.start == false && platformNum < (6 + (lvl*10))))
+        //spawn platforms if game started
+        if(MyGame.start)
         {
             spawnPlatform();
         }
-
-        spawnEnemy();
-        checkBoost();
         
+        //start game is space is pressed and game not started yet
         if(MyGame.start == false && Greenfoot.isKeyDown("Space"))
         {
             MyGame.start = true;
-            System.out.println("start = " + MyGame.start);
+            
+            world.addObject(new Platform(1, lvl),Greenfoot.getRandomNumber(world.getWidth()), -20);
+            platformTimer.mark();
         }
     }
 
+    /**
+     * check is boost is active, start/end boost, and change platform speed accordingly
+     */
     private void checkBoost()
     {
          //if boost is activated, change spawn rate and speed of platforms
@@ -81,7 +88,6 @@ public class Level extends Actor
     {
         if(platformTimer.millisElapsed() >= platSpawnRate && platformNum > 0)
         {
-            System.out.println(platformNum);
             int xPos = Greenfoot.getRandomNumber(world.getWidth());
             
             platformNum--;
@@ -90,6 +96,9 @@ public class Level extends Actor
             if(platformNum == 0)
             {
                 xPos = world.getWidth()/2;
+                //shop spawn
+                ShopIcon shopIcon = new ShopIcon();
+                world.addObject(shopIcon, 340, -130); 
             }
             
             world.addObject(new Platform(platformNum, lvl), xPos, -50);

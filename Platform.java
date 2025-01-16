@@ -25,9 +25,7 @@ public class Platform extends Actor
             image.scale(800, height * 30);
         }
         setImage(image);
-        
-        System.out.println(platformNum);
-    }
+            }
 
     public void act()
     {
