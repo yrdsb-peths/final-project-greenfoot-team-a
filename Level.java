@@ -38,28 +38,20 @@ public class Level extends Actor
     public void act()
     {
         world = (MyGame) getWorld();
-
-        if(!(MyGame.start == false && platformNum < 7))
+        
+        
+        if(!(MyGame.start == false && platformNum < (6 + (lvl*10))))
         {
             spawnPlatform();
         }
 
         spawnEnemy();
         checkBoost();
-
-        //remove last platform if space is pressed and start next level
-        if(platformNum == 0)
-        {
-            //add higher level object, remove this level
-            MyGame.start = false;
-            MyGame.level = new Level(1 + lvl);
-            world.addObject(MyGame.level,0,0);
-            world.removeObject(this);
-        }
+        
         if(MyGame.start == false && Greenfoot.isKeyDown("Space"))
         {
             MyGame.start = true;
-            world.removeObject(lastPlatform);
+            System.out.println("start = " + MyGame.start);
         }
     }
 
@@ -68,10 +60,15 @@ public class Level extends Actor
          //if boost is activated, change spawn rate and speed of platforms
          if(!world.getObjects(Boost.class).isEmpty())
          {
+            platSpawnRate = 500;
+            MyGame.speed = 40;
+
+            //reset speed if more then 7 sec passed
             if(levelTimer.millisElapsed() >= 7000)
             {
-                platSpawnRate = 500;
-                MyGame.speed = 40;
+                platSpawnRate = 1000;
+                MyGame.speed = (int)(lvl*1.5) + 2;
+
                 world.removeObjects(world.getObjects(Boost.class));
             }
          } 
@@ -80,7 +77,7 @@ public class Level extends Actor
     /**
      * add platform to top of screen at random x value
      */
-    private void spawnPlatform()
+    public void spawnPlatform()
     {
         if(platformTimer.millisElapsed() >= platSpawnRate && platformNum > 0)
         {
@@ -92,17 +89,22 @@ public class Level extends Actor
             //add platform to screen
             if(platformNum == 0)
             {
-                xPos = world.getWidth() /2;
-                lastPlatform = new Platform(0);
-                world.addObject(lastPlatform, world.getWidth()/2, -50);
+                xPos = world.getWidth()/2;
             }
-            else
-            {
-                world.addObject(new Platform(platformNum), xPos, -50);
-            }
-
+            
+            world.addObject(new Platform(platformNum, lvl), xPos, -50);
+            
             platformTimer.mark();
             coinSpawn(xPos);
+        }
+        
+        //if last platform in level, add new level and remove current
+        if(platformNum == 0)
+        {
+            //add higher level object, remove this level
+            MyGame.level = new Level(1 + lvl);
+            world.addObject(MyGame.level,0,0);
+            world.removeObject(this);
         }
     }
 
@@ -112,7 +114,7 @@ public class Level extends Actor
     private void coinSpawn(int xPos)
     {
         //spawn coins at 15% spawn rate (15% chance random number <= 15)
-        if(Greenfoot.getRandomNumber(100) <= 15 && platformNum != 0 && MyGame.start)
+        if(Greenfoot.getRandomNumber(100) <= 15 && platformNum != 0)
         {
             world.addObject(new Coin(), xPos, -75);
         }

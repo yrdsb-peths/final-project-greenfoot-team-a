@@ -15,7 +15,6 @@ public class Coin extends Actor
         {
             images[i] = new GreenfootImage("images/sprites/coin/coin" + (i+1)+ ".png");
             images[i].scale(190,190);
-            
         }
     }
 
@@ -27,8 +26,22 @@ public class Coin extends Actor
         {
             animate();
         }
+        
+        if(MyGame.start)
+        {
+            setLocation(getX(), getY() + MyGame.speed);
+        }
+        removeCoin();
+    
+    }
 
-        setLocation(getX(), getY() + MyGame.speed);
+    private void removeCoin()
+    {
+        if(getY() > 650)
+        {
+            MyGame world = (MyGame) getWorld();
+            world.removeObject(this);
+        }
     }
     
     private void animate()
