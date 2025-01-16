@@ -11,7 +11,6 @@ public class Level extends Actor
     int lvl;                                            //level player is on
     int platformNum;                                    //number of platforms yet to be spawned
     int platSpawnRate;                                  //milliseconds between platform spawns
-
     int enemyNum;                                       //number of enemies left to spawn
    
     MyGame world;                                       
@@ -19,13 +18,14 @@ public class Level extends Actor
     public Level(int lvl)
     {
         this.lvl = lvl;
+        setImage((GreenfootImage)null);
 
         //num of platforms and enemies in the level
         platformNum = 10 + (lvl * 10);
         enemyNum = 1 + (lvl * 2);
-        
+
         //spawn rate and speed of platform
-        platSpawnRate = 1200;
+        platSpawnRate = 1000;
         MyGame.speed = (int) (lvl * 1.5) + 2;
 
         //if boost is activated, change spawn rate and speed of platforms
@@ -46,8 +46,8 @@ public class Level extends Actor
         world = (MyGame) getWorld();
 
         spawnPlatform();
-        removeBoost();
         spawnEnemy();
+        removeBoost();
 
         //remove last platform if space is pressed and start next level
         if(platformNum == 0 && Greenfoot.isKeyDown("SPACE"))
@@ -95,9 +95,9 @@ public class Level extends Actor
     private void coinSpawn(int xPos)
     {
         //spawn coins at 10% spawn rate (10% chance random number <= 10)
-        if(Greenfoot.getRandomNumber(100) <= 100)
+        if(Greenfoot.getRandomNumber(100) <= 100 && platformNum != 0)
         {
-            world.addObject(new Coin(), xPos, -70);
+            world.addObject(new Coin(), xPos, -75);
         }
     }
 
@@ -127,7 +127,6 @@ public class Level extends Actor
             int y = Greenfoot.getRandomNumber(300);
             
             enemyNum--;
-            System.out.println("ENEMY " + enemyNum);
             
             //create enemy and spawn at random y value
             Enemy enemy = new Enemy(MyGame.speed);

@@ -9,8 +9,6 @@ import java.util.List;
  */
 
 public class Avatar extends Actor {
-    GreenfootImage sussyImage = new GreenfootImage("images/sussy.png");
-
     // Gameplay variables
     private int velocity = 0; // The character's vertical velocity
     private int gravity = 1; // Gravity pulling the character down
@@ -338,21 +336,39 @@ public class Avatar extends Actor {
             velocity--;  // Decrease the velocity as part of the jump
         }
     }
-}
-
-
-
-
-
-
-
+    
+    public void collect() {
+        MyGame world = (MyGame) getWorld();
+        
+        Actor coin = getOneIntersectingObject(Coin.class); //assign interescting coin an actor
+        if(coin != null) {
+            getWorld().removeObject(coin); //remove coin actor that interesects with avatar
+            MyGame.increaseScore(100); //increase score
+            MyGame.increaseCoins(); //increase coin count
+        }
+    }
+    
+    public void checkShop() {
+        MyGame gameWorld = (MyGame) getWorld(); 
+        Label shopLabel = new Label("Press [ENTER] to enter shop", 20); //instruct player how to enter shop
+        
+        Actor shop = getOneIntersectingObject(ShopIcon.class); //check when avatar is near shop
+        if(shop != null) {
+            gameWorld.addObject(shopLabel, 200, 300);
+            if(Greenfoot.isKeyDown("enter")) {
+                gameWorld.enterShop(); //go to ShopWorld screen
+            }
+        }
+        gameWorld.removeObject(shopLabel); //remove instruction
+    }
+    
     public void act() {
         fall();
         animateAvatar();
         checkJump();
         checkWarp();
         checkKeys();
-        System.out.println(isJumping);
-        
+        collect();
+        checkShop();
     }
 }

@@ -4,17 +4,19 @@ public class Coin extends Actor
 {
     int frame = 0;           //counter for animation
     int animationTimer;      //speed of animation
+    GreenfootImage firstFrame = new GreenfootImage("images/sprites/coin/coin1.png");
     GreenfootImage[] images = new GreenfootImage[6];
 
     public Coin()
     {
-        setImage(images[0]);
-
+        firstFrame.scale(190,190);
+        setImage(firstFrame);
+        
         //fill array with animation frames
         for(int i = 0; i < 6; i++)
         {
             images[i] = new GreenfootImage("images/sprites/coin/coin" + (i+1)+ ".png");
-            images[i].scale(130,130);
+            images[i].scale(190,190);
             
         }
     }
@@ -30,7 +32,7 @@ public class Coin extends Actor
 
         setLocation(getX(), getY() + MyGame.speed);
     }
-
+    
     private void animate()
     {
         //change image to next frame
