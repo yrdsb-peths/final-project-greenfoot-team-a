@@ -6,7 +6,6 @@ public class MyGame extends World
     public static int speed;                  //speed of platforms 
     
     //boolean variables tracking active powerups
-    public static boolean boost = false;                
     public static boolean shield = false;   
     
     public static int numCoins = 0;                      //track number of coins
@@ -16,6 +15,8 @@ public class MyGame extends World
     public static int numFish = 0;                       //track fish score
     public static ScoreLabel fishLabel;                  //displays current fish count
     
+    public static boolean start = false;
+
     public MyGame()
     {
         super(400,600,1, false);
@@ -48,9 +49,8 @@ public class MyGame extends World
         
         level = new Level(-1);
         addObject(level, 0,0);
-
-        Platform platform = new Platform(0);
-        addObject(platform, getWidth()/2, 590);
+        
+        levelSetUp();
     }
 
     public void act() {
@@ -64,6 +64,22 @@ public class MyGame extends World
     
     public static void increaseCoins() {
         numCoins++;
+    }
+    
+    /**
+     * place starting platforms onto screen
+     */
+    public void levelSetUp()
+    {
+        for(int i = 0; i < 6; i++)
+        {
+            int xPos = Greenfoot.getRandomNumber(getWidth() / 2);
+            if(i == 0)
+            {
+                xPos = getWidth() / 2;
+            }
+            addObject(new Platform(i, -1), xPos, 590 - (i* 110));
+        }
     }
     
     public static void increaseScore(int addScore) {
