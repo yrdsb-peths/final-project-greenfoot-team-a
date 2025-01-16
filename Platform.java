@@ -15,6 +15,7 @@ public class Platform extends Actor
         this.platformNum = platformNum;
         height = this.getImage().getHeight();
 
+
         //if last platform in level
         if(platformNum == 0)
         {
@@ -47,6 +48,11 @@ public class Platform extends Actor
                 world.removeObject(this);   
             }
         }
+    }
+    
+    public int getHeight(){
+        int platformHeight = this.getImage().getHeight();
+        return platformHeight;
     }
 }
  
