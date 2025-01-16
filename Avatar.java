@@ -315,17 +315,17 @@ public class Avatar extends Actor {
     }
     
     public void checkShop() {
-        MyGame gameWorld = (MyGame) getWorld();
-        Label shopLabel = new Label("Press [ENTER] to enter shop", 20);
+        MyGame gameWorld = (MyGame) getWorld(); 
+        Label shopLabel = new Label("Press [ENTER] to enter shop", 20); //instruct player how to enter shop
         
-        Actor shop = getOneIntersectingObject(ShopIcon.class);
+        Actor shop = getOneIntersectingObject(ShopIcon.class); //check when avatar is near shop
         if(shop != null) {
             gameWorld.addObject(shopLabel, 200, 300);
             if(Greenfoot.isKeyDown("enter")) {
-                gameWorld.enterShop();
+                gameWorld.enterShop(); //go to ShopWorld screen
             }
         }
-        gameWorld.removeObject(shopLabel);
+        gameWorld.removeObject(shopLabel); //remove instruction
     }
     
     public void act() {
