@@ -18,3 +18,5 @@ Copy the `project.greenfoot.md` file and rename it to `project.greenfoot`
 
 # Learn Markdown Basics
 [Markdown basics](https://www.markdownguide.org/getting-started/)
+
+1. Group Members: Maggie, Julie, Brianna, and Carlisa
