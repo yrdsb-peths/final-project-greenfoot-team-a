@@ -18,6 +18,9 @@ public class MyGame extends World
 
         level = new Level(1);
         addObject(level, 0,0);
+        
+        Avatar avatar = new Avatar();
+        addObject(avatar, 200, 300);
     }
 
     public void act()

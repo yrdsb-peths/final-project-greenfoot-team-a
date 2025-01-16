@@ -13,12 +13,12 @@ public class Platform extends Actor
         this.type = type;
         
         GreenfootImage image = platformImgs[Greenfoot.getRandomNumber(1)];
-        image.scale(this.getImage().getWidth() * 10, this.getImage().getHeight() * 10);
+        image.scale(this.getImage().getWidth() *8, this.getImage().getHeight());
 
         //if last platform in level
         if(type == 0)
         {
-            image.scale(600, this.getImage().getHeight()* 25);
+            image.scale(400, this.getImage().getHeight()*2);
         }
         setImage(image);
     }
@@ -47,5 +47,10 @@ public class Platform extends Actor
                 world.removeObject(this);   
             }
         }
+    }
+    
+    public int getHeight(){
+        int platformHeight = this.getImage().getHeight();
+        return platformHeight;
     }
 }

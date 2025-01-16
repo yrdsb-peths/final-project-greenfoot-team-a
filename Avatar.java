@@ -1,4 +1,5 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+import java.util.List;
 
 /**
  * This class provides the controls and sprite for our main player avatar.
@@ -13,14 +14,15 @@ public class Avatar extends Actor {
     // Gameplay variables
     private int velocity = 0; // The character's vertical velocity
     private int gravity = 1; // Gravity pulling the character down
-    private int maxJumpVelocity = -15; // Maximum upward velocity for a fully charged jump
-    private int minJumpVelocity = -5; // Initial jump velocity for a short jump
+    private int maxJumpVelocity = -40; // Maximum upward velocity for a fully charged jump
+    private int minJumpVelocity = -10; // Initial jump velocity for a short jump
     private int jumpCharge = 0; // Tracks how long the jump key is held
     private boolean isJumping = false; // Tracks if the character is in the air
     private boolean keyReleased = true; // Tracks if the jump key has been released
     public static boolean isDead = false; // Tracks if Avatar dies
     public static boolean isDamaged = false; // Tracks if Avatar is damaged
     public static boolean onGround = true;
+    private boolean onPlatform = false;
     private boolean isMoving = false;
     private String facing = "right";
 
@@ -271,46 +273,78 @@ public class Avatar extends Actor {
 
     public void checkJump() {
         boolean jumpKeyHeld = Greenfoot.isKeyDown("up");
-
-        if (jumpKeyHeld && keyReleased && !isDead) {
-            if (!isJumping) {
-                velocity = minJumpVelocity; // Start the jump
-                isJumping = true;
-                jumpCharge = 0; // Start charging the jump
-            }
-            keyReleased = false; // Prevent repeated jumping
+    
+        // Jump if the key is pressed, the player is not dead, and it is not already jumping
+        if (jumpKeyHeld && keyReleased && !isDead && !isJumping){
+            velocity = minJumpVelocity; // Start the jump with a minimum velocity
+            isJumping = true; // Set jumping flag to true
+            jumpCharge = 0; // Reset the jump charge (unused in your current setup)
         }
-
-        // Handle jump charging while key is held
+    
+        // Handle jump charging while the jump key is held down
         if (jumpKeyHeld && isJumping) {
-            // Tracks how long button was held (max 15 game cycles)
-            if (jumpCharge < 15) {
+            if (jumpCharge < 15) {  // Limit the jump charge
                 jumpCharge++;
-                velocity--; // Increase jump strength
+                velocity--; // Increase jump velocity (going up)
                 if (velocity < maxJumpVelocity) {
-                    velocity = maxJumpVelocity; // Cap the jump velocity
+                    velocity = maxJumpVelocity; // Cap the velocity to prevent excessive jump height
                 }
             }
         }
-
-        // Reset when key is released
+    
+        // Reset key release state when the jump key is released
         if (!jumpKeyHeld) {
-            keyReleased = true; // Allow the next jump
+            keyReleased = true; // Allow for a new jump next time
         }
     }
+
 
     public void fall() {
-        setLocation(getX(), getY() + velocity); // Updates location
+    int avatarWidth = getImage().getWidth();
+    int avatarHeight = getImage().getHeight();
 
-        // If the character hits or sinks below the ground, reset
-        if (getY() >= getWorld().getHeight() - 100) {
-            setLocation(getX(), getWorld().getHeight() - 100); // Snap to ground level
+    // Check for platforms directly below the Avatar
+    int offsetY = avatarHeight / 2; // Check from the center downwards
+    
+    // Find the platform below the avatar
+    Platform platform = (Platform) getOneObjectAtOffset(0, offsetY, Platform.class);
+
+    // No platform below, apply gravity and let avatar fall
+    if (platform == null) {
+        setLocation(getX(), getY() + velocity); 
+        velocity += gravity;  // Apply gravity to velocity
+
+        // If the avatar hits the ground, stop falling
+        if (getY() >= getWorld().getHeight() - 30) {
+            setLocation(getX(), getWorld().getHeight() - 30);  // Snap to ground
             velocity = 0; // Stop falling
             isJumping = false; // Allow jumping again
-        } else {
-            velocity += gravity; // Apply gravity while in the air
+        }
+    } else {  // Avatar is on a platform
+        // Ensure avatar is directly above the platform, preventing overlap
+        onPlatform = true;
+        isJumping = false;
+
+        // Check if the avatar is exactly above the platform
+        if (getY() + avatarHeight / 2 > platform.getY()) {
+            // Align avatar's bottom with platform's top, allowing no overlap
+            setLocation(getX(), platform.getY() - avatarHeight / 2);
+            velocity = 0; // Stop gravity from applying
+        }
+
+        // Allow upward movement if jumping, even while on the platform
+        if (velocity < 0) {
+            setLocation(getX(), getY() + velocity); // Move up if jumping
+            velocity--;  // Decrease the velocity as part of the jump
         }
     }
+}
+
+
+
+
+
+
 
     public void act() {
         fall();
@@ -318,5 +352,7 @@ public class Avatar extends Actor {
         checkJump();
         checkWarp();
         checkKeys();
+        System.out.println(isJumping);
+        
     }
 }
