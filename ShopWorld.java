@@ -75,6 +75,7 @@ public class ShopWorld extends World
      */
     public void returnToGame() {
         if(Greenfoot.isKeyDown("escape")) {
+            gameWorld.coinLabel.setValue(shopCoins);
             Greenfoot.setWorld(gameWorld);
         }
     }

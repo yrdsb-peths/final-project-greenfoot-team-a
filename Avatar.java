@@ -344,8 +344,8 @@ public class Avatar extends Actor {
         Actor coin = getOneIntersectingObject(Coin.class); //assign interescting coin an actor
         if(coin != null) {
             getWorld().removeObject(coin); //remove coin actor that interesects with avatar
-            MyGame.increaseScore(100); //increase score
-            MyGame.increaseCoins(); //increase coin count
+            world.increaseScore(100); //increase score
+            world.increaseCoins(); //increase coin count
         }
     }
     

@@ -34,7 +34,7 @@ public class MyGame extends World
         //displays coin count on game world
         coinLabel = new ScoreLabel(numCoins, 35);
         addObject(coinLabel, 370, 55);
-        Coin coin = new Coin();
+        CoinScore coin = new CoinScore();
         coin.sleepFor(-1);
         addObject(coin, 315, 55);
         addObject(new Label(":", 30), 340, 55);
@@ -54,7 +54,6 @@ public class MyGame extends World
     }
 
     public void act() {
-        coinLabel.setValue(ShopWorld.shopCoins);
         fishLabel.setValue(ShopWorld.shopFish);
     }
     
@@ -64,6 +63,7 @@ public class MyGame extends World
     
     public static void increaseCoins() {
         numCoins++;
+        coinLabel.setValue(numCoins);
     }
     
     /**
