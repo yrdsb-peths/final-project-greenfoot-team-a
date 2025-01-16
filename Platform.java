@@ -34,7 +34,7 @@ public class Platform extends Actor
         movePlatform();
         
         //pause game if platform 0 has reached bottom of screen
-        if(lvl > -1 && platformNum == 0 && getY() >= 590)
+        if(platformNum == 0 && getY() >= 590)
         {
             MyGame.start = false;
             

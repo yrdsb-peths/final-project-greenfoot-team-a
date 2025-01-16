@@ -12,7 +12,7 @@ public class Avatar extends Actor {
     // Gameplay variables
     private int velocity = 0; // The character's vertical velocity
     private int gravity = 1; // Gravity pulling the character down
-    private int maxJumpVelocity = -40; // Maximum upward velocity for a fully charged jump
+    private int maxJumpVelocity = -30; // Maximum upward velocity for a fully charged jump
     private int minJumpVelocity = -10; // Initial jump velocity for a short jump
     private int jumpCharge = 0; // Tracks how long the jump key is held
     private boolean isJumping = false; // Tracks if the character is in the air
@@ -297,29 +297,27 @@ public class Avatar extends Actor {
     }
 
 
-        public void fall() {
+    public void fall() {
         int avatarWidth = getImage().getWidth();
         int avatarHeight = getImage().getHeight();
     
-        // Check for platforms directly below the Avatar
-        int offsetY = avatarHeight / 2; // Check from the center downwards
+        int offsetY = avatarHeight / 2;
         
-        // Find the platform below the avatar
-        Platform platform = (Platform) getOneObjectAtOffset(0, offsetY, Platform.class);
+        Platform platform = (Platform) getOneObjectAtOffset(0, this.getY() + offsetY, Platform.class);
     
         // No platform below, apply gravity and let avatar fall
         if (platform == null) {
             setLocation(getX(), getY() + velocity); 
             velocity += gravity;  // Apply gravity to velocity
+            onPlatform=false;
     
             // If the avatar hits the ground, stop falling
             if (getY() >= getWorld().getHeight() - 30) {
                 setLocation(getX(), getWorld().getHeight() - 30);  // Snap to ground
                 velocity = 0; // Stop falling
-                isJumping = false; // Allow jumping again
+                isJumping = false; 
             }
-        } else {  // Avatar is on a platform
-            // Ensure avatar is directly above the platform, preventing overlap
+        } else {  
             onPlatform = true;
             isJumping = false;
     
@@ -371,5 +369,6 @@ public class Avatar extends Actor {
         checkKeys();
         collect();
         checkShop();
+        System.out.println(onPlatform);
     }
 }
