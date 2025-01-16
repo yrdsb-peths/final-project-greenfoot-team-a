@@ -297,43 +297,44 @@ public class Avatar extends Actor {
     }
 
 
-    public void fall() {
-    int avatarWidth = getImage().getWidth();
-    int avatarHeight = getImage().getHeight();
-
-    // Check for platforms directly below the Avatar
-    int offsetY = avatarHeight / 2; // Check from the center downwards
+        public void fall() {
+        int avatarWidth = getImage().getWidth();
+        int avatarHeight = getImage().getHeight();
     
-    // Find the platform below the avatar
-    Platform platform = (Platform) getOneObjectAtOffset(0, offsetY, Platform.class);
-
-    // No platform below, apply gravity and let avatar fall
-    if (platform == null) {
-        setLocation(getX(), getY() + velocity); 
-        velocity += gravity;  // Apply gravity to velocity
-
-        // If the avatar hits the ground, stop falling
-        if (getY() >= getWorld().getHeight() - 30) {
-            setLocation(getX(), getWorld().getHeight() - 30);  // Snap to ground
-            velocity = 0; // Stop falling
-            isJumping = false; // Allow jumping again
-        }
-    } else {  // Avatar is on a platform
-        // Ensure avatar is directly above the platform, preventing overlap
-        onPlatform = true;
-        isJumping = false;
-
-        // Check if the avatar is exactly above the platform
-        if (getY() + avatarHeight / 2 > platform.getY()) {
-            // Align avatar's bottom with platform's top, allowing no overlap
-            setLocation(getX(), platform.getY() - avatarHeight / 2);
-            velocity = 0; // Stop gravity from applying
-        }
-
-        // Allow upward movement if jumping, even while on the platform
-        if (velocity < 0) {
-            setLocation(getX(), getY() + velocity); // Move up if jumping
-            velocity--;  // Decrease the velocity as part of the jump
+        // Check for platforms directly below the Avatar
+        int offsetY = avatarHeight / 2; // Check from the center downwards
+        
+        // Find the platform below the avatar
+        Platform platform = (Platform) getOneObjectAtOffset(0, offsetY, Platform.class);
+    
+        // No platform below, apply gravity and let avatar fall
+        if (platform == null) {
+            setLocation(getX(), getY() + velocity); 
+            velocity += gravity;  // Apply gravity to velocity
+    
+            // If the avatar hits the ground, stop falling
+            if (getY() >= getWorld().getHeight() - 30) {
+                setLocation(getX(), getWorld().getHeight() - 30);  // Snap to ground
+                velocity = 0; // Stop falling
+                isJumping = false; // Allow jumping again
+            }
+        } else {  // Avatar is on a platform
+            // Ensure avatar is directly above the platform, preventing overlap
+            onPlatform = true;
+            isJumping = false;
+    
+            // Check if the avatar is exactly above the platform
+            if (getY() + avatarHeight / 2 > platform.getY()) {
+                // Align avatar's bottom with platform's top, allowing no overlap
+                setLocation(getX(), platform.getY() - avatarHeight / 2);
+                velocity = 0; // Stop gravity from applying
+            }
+    
+            // Allow upward movement if jumping, even while on the platform
+            if (velocity < 0) {
+                setLocation(getX(), getY() + velocity); // Move up if jumping
+                velocity--;  // Decrease the velocity as part of the jump
+            }
         }
     }
     
