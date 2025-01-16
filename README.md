@@ -20,3 +20,4 @@ Copy the `project.greenfoot.md` file and rename it to `project.greenfoot`
 [Markdown basics](https://www.markdownguide.org/getting-started/)
 
 1. Group Members: Maggie, Julie, Brianna, and Carlisa
+2. We created our own sprites including the avatar, enemy, coins, platforms, shop icon and shop background 
