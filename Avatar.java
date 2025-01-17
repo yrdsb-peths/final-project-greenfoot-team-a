@@ -47,66 +47,66 @@ public class Avatar extends Actor {
         // Load idleRight image
         for (int i = 0; i < 6; i++) {  // Fixed the starting index here
             idleRight[i] = new GreenfootImage("images/sprites/avatar/idle/idle" + (i + 1) + ".png");
-            idleRight[i].scale(100, 100);
+            idleRight[i].scale(52, 42);
         }
 
         // Load idleLeft images
         for (int i = 0; i < 6; i++) {  
             idleLeft[i] = new GreenfootImage("images/sprites/avatar/idle/idle" + (i + 1) + ".png");
             idleLeft[i].mirrorHorizontally();
-            idleLeft[i].scale(100, 100); 
+            idleLeft[i].scale(52, 42); 
         }
 
         // Load runRight images
         for (int i = 0; i < 6; i++) {
             runRight[i] = new GreenfootImage("images/sprites/avatar/run/run" + (i + 1) + ".png");
-            runRight[i].scale(100, 100);
+            runRight[i].scale(52, 42);
         }
 
         // Load runLeft images
         for (int i = 0; i < 6; i++) {
             runLeft[i] = new GreenfootImage("images/sprites/avatar/run/run" + (i + 1) + ".png");
             runLeft[i].mirrorHorizontally();
-            runLeft[i].scale(100, 100); 
+            runLeft[i].scale(52,42); 
         }
 
         // Load jumpRight images
         for (int i = 0; i < 7; i++) {
             jumpRight[i] = new GreenfootImage("images/sprites/avatar/jump/jump" + (i + 1) + ".png");
-            jumpRight[i].scale(100, 100);
+            jumpRight[i].scale(53,42);
         }
 
         // Load jumpLeft images
         for (int i = 0; i < 7; i++) {
             jumpLeft[i] = new GreenfootImage("images/sprites/avatar/jump/jump" + (i + 1) + ".png");
             jumpLeft[i].mirrorHorizontally();
-            jumpLeft[i].scale(100, 100); 
+            jumpLeft[i].scale(53, 42); 
         }
 
         // Load deathRight images
         for (int i = 0; i < 7; i++) {
             deathRight[i] = new GreenfootImage("images/sprites/avatar/death/death" + (i + 1) + ".png");
-            deathRight[i].scale(100, 100);
+            deathRight[i].scale(80, 52);
         }
 
         // Load deathLeft images
         for (int i = 0; i < 7; i++) {
             deathLeft[i] = new GreenfootImage("images/sprites/avatar/death/death" + (i + 1) + ".png");
             deathLeft[i].mirrorHorizontally();
-            deathLeft[i].scale(100, 100);
+            deathLeft[i].scale(80, 52);
         }
 
         // Load damageRight images
         for (int i = 0; i < 4; i++) {
             damageRight[i] = new GreenfootImage("images/sprites/avatar/damage/damage" + (i + 1) + ".png");
-            damageRight[i].scale(100, 100);
+            damageRight[i].scale(52,42);
         }
 
         // Load damageLeft images
         for (int i = 0; i < 4; i++) {
             damageLeft[i] = new GreenfootImage("images/sprites/avatar/damage/damage" + (i + 1) + ".png");
             damageLeft[i].mirrorHorizontally();
-            damageLeft[i].scale(100, 100);
+            damageLeft[i].scale(52,42);
         }
 
         // Set the initial image to idleRight[0]
@@ -231,13 +231,8 @@ public class Avatar extends Actor {
     }
 
     public void checkKeys() {
-        if (Greenfoot.isKeyDown("D") && !isDead) {
+        if (Greenfoot.isKeyDown("D") && !isDead){
             isDead = true; // Changes boolean given condition
-            imageIndex = 0;
-        }
-        
-        if (Greenfoot.isKeyDown("D") && isDead) {
-            isDead = false;; // Changes boolean given condition
             imageIndex = 0;
         }
         
@@ -294,6 +289,7 @@ public class Avatar extends Actor {
         if (!jumpKeyHeld) {
             keyReleased = true; // Allow for a new jump next time
         }
+        velocity = Math.min(velocity, 20);
     }
 
 
@@ -301,41 +297,39 @@ public class Avatar extends Actor {
         int avatarWidth = getImage().getWidth();
         int avatarHeight = getImage().getHeight();
     
-        int offsetY = avatarHeight / 2;
+        // Check for platforms directly below the Avatar
+        int offsetY = avatarHeight / 2; // Check from the center downwards
         
-        Platform platform = (Platform) getOneObjectAtOffset(0, this.getY() + offsetY, Platform.class);
+        // Find the platform below the avatar
+        Actor platform = getOneIntersectingObject(Platform.class);
     
         // No platform below, apply gravity and let avatar fall
         if (platform == null) {
             setLocation(getX(), getY() + velocity); 
             velocity += gravity;  // Apply gravity to velocity
-            onPlatform=false;
     
             // If the avatar hits the ground, stop falling
-            if (getY() >= getWorld().getHeight() - 30) {
-                setLocation(getX(), getWorld().getHeight() - 30);  // Snap to ground
+            if (getY() >= getWorld().getHeight() - offsetY) {
+                keyReleased = true;
+                setLocation(getX(), getWorld().getHeight() - offsetY);  // Snap to ground
                 velocity = 0; // Stop falling
-                isJumping = false; 
+                isJumping = false; // Allow jumping again
             }
-        } else {  
-            onPlatform = true;
-            isJumping = false;
-    
-            // Check if the avatar is exactly above the platform
-            if (getY() + avatarHeight / 2 > platform.getY()) {
-                // Align avatar's bottom with platform's top, allowing no overlap
-                setLocation(getX(), platform.getY() - avatarHeight / 2);
-                velocity = 0; // Stop gravity from applying
-            }
-    
-            // Allow upward movement if jumping, even while on the platform
-            if (velocity < 0) {
+        } else {  // Avatar is on a platform
+            if (getY() + offsetY + velocity > platform.getY() - (platform.getImage().getHeight() / 2)) {
+                // If falling, ensure avatar is directly above the platform (at the top edge of platform)
+                setLocation(getX(), platform.getY() - platform.getImage().getHeight() / 2 - offsetY);
+                velocity = 0;  // Stop vertical movement (gravity or falling)
+                isJumping = false;  // You're no longer jumping because you've landed
+            } else if (velocity < 0) {
+                // If velocity is negative (jumping), allow upward movement
                 setLocation(getX(), getY() + velocity); // Move up if jumping
-                velocity--;  // Decrease the velocity as part of the jump
+                velocity--;  // Slow down the upward movement (gravity)
             }
+
         }
     }
-    
+        
     public void collect() {
         MyGame world = (MyGame) getWorld();
         
@@ -367,8 +361,7 @@ public class Avatar extends Actor {
         checkJump();
         checkWarp();
         checkKeys();
-        collect();
-        checkShop();
-        System.out.println(onPlatform);
+        //collect();
+        //checkShop();
     }
 }
