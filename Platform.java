@@ -38,7 +38,7 @@ public class Platform extends Actor
         {
             MyGame.start = false;
             
-            if(Greenfoot.isKeyDown("SPACE"))
+            if(Greenfoot.isKeyDown("up"))
             {
                 MyGame.start = true;
                 world.removeObject(this);

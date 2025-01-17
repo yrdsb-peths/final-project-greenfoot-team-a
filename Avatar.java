@@ -45,6 +45,7 @@ public class Avatar extends Actor {
     SimpleTimer animationTimer = new SimpleTimer();
 
     public Avatar() {
+        isDead = false;
         // Load idleRight image
         for (int i = 0; i < 6; i++) {  // Fixed the starting index here
             idleRight[i] = new GreenfootImage("images/sprites/avatar/idle/idle" + (i + 1) + ".png");
@@ -126,6 +127,7 @@ public class Avatar extends Actor {
         
         // If the avatar is dead, play the death animation and stop after the last frame
         if (isDead) {
+            MyGame.start = false;
             if (facing.equals("right")) {
                 imageIndex = imageIndex % deathRight.length;
                 setImage(deathRight[imageIndex]);
@@ -323,6 +325,7 @@ public class Avatar extends Actor {
                 isOnGround=true;
                 setLocation(getX(), getWorld().getHeight() - offsetY);  // Snap to ground
                 velocity = 0; // Stop falling
+                isDead=true;
                 isJumping = false; // Allow jumping again
             }
         }
@@ -346,10 +349,16 @@ public class Avatar extends Actor {
         }
     }
         
-    public void collect() {
+    public void collision() {
         MyGame world = (MyGame) getWorld();
         
         Actor coin = getOneIntersectingObject(Coin.class); //assign interescting coin an actor
+        if(coin != null) {
+            getWorld().removeObject(coin); //remove coin actor that interesects with avatar
+            MyGame.increaseScore(100); //increase score
+            MyGame.numCoins++; //increase coin count
+        }
+        Actor enemy = getOneIntersectingObject(Enemy.class);
         if(coin != null) {
             getWorld().removeObject(coin); //remove coin actor that interesects with avatar
             MyGame.increaseScore(100); //increase score
@@ -377,8 +386,7 @@ public class Avatar extends Actor {
         checkJump();
         checkWarp();
         checkKeys();
-        System.out.println(wasOnPlatform);
-        collect();
+        collision();
         checkShop();
     }
 }

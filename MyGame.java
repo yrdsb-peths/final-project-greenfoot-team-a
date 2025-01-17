@@ -15,7 +15,8 @@ public class MyGame extends World
     public static int score = 0;                         //track player score
     public static ScoreLabel scoreLabel;                 //displays current score
     public static int numFish = 0;                       //track fish score
-    public static ScoreLabel fishLabel;                  //displays current fish count
+    public static ScoreLabel fishLabel; //displays current fish count
+    
     
     public static boolean start = false;
 
@@ -29,6 +30,9 @@ public class MyGame extends World
         scoreLabel = new ScoreLabel(score, 35);
         addObject(scoreLabel, 350, 20);
         addObject(new Label("Score: ", 30), 270, 20);
+        
+        Avatar avatar = new Avatar();
+        addObject(avatar, 200, 550);
         
         //displays coin count on game world
         coinLabel = new ScoreLabel(numCoins, 35);
