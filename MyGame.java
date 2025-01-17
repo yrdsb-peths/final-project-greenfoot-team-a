@@ -15,7 +15,7 @@ public class MyGame extends World
     public static int score = 0;                         //track player score
     public static ScoreLabel scoreLabel;                 //displays current score
     public static int numFish = 0;                       //track fish score
-    public static ScoreLabel fishLabel; //displays current fish count
+    public static ScoreLabel fishLabel;                  //displays current fish count
     
     
     public static boolean start = false;
@@ -80,14 +80,14 @@ public class MyGame extends World
      */
     public void levelSetUp()
     {
-        for(int i = 0; i < 6; i++)
+        for(int i = 0; i < 4; i++)
         {
             int xPos = Greenfoot.getRandomNumber(getWidth() / 2);
             if(i == 0)
             {
                 xPos = getWidth() / 2;
             }
-            addObject(new Platform(i, -1), xPos, 590 - (i* 110));
+            addObject(new Platform(i, -1), xPos, 590 - (i* 140));
         }
     }
     

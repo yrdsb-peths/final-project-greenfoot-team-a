@@ -3,18 +3,17 @@ import greenfoot.*;
 public class Level extends Actor
 {
     //timers
-    SimpleTimer platformTimer = new SimpleTimer();      //timer teacking time between platform spawns
+    SimpleTimer platformTimer = new SimpleTimer();                    //timer tracking time between platform spawns
     public static SimpleTimer levelTimer = new SimpleTimer();         //timer tracking level length
-    SimpleTimer enemyTimer = new SimpleTimer();         //timer tracking time between enemy spawns
+    SimpleTimer enemyTimer = new SimpleTimer();                       //timer tracking time between enemy spawns
 
     //level variables
     int lvl;                                            //level player is on
     int platformNum;                                    //number of platforms yet to be spawned
     int platSpawnRate;                                  //milliseconds between platform spawns
     int enemyNum;                                       //number of enemies left to spawn
-   
+    
     MyGame world;  
-    Platform lastPlatform;                                     
     
     public Level(int lvl)
     {
@@ -26,8 +25,8 @@ public class Level extends Actor
         enemyNum = 1 + (lvl * 2);
 
         //spawn rate and speed of platform
-        MyGame.speed = lvl + 2;
-        platSpawnRate = (int)1800/MyGame.speed;
+        MyGame.speed = lvl + 3;
+        platSpawnRate = (int)3100/MyGame.speed;
 
 
         //start timers
@@ -70,11 +69,11 @@ public class Level extends Actor
             platSpawnRate = 500;
             MyGame.speed = 40;
 
-            //reset speed if more then 7 sec passed
-            if(levelTimer.millisElapsed() >= 7000)
+            //reset speed if more then 5 sec passed
+            if(levelTimer.millisElapsed() >= 5000)
             {
-                platSpawnRate = 1000;
-                MyGame.speed = (int)(lvl*1.5) + 2;
+                MyGame.speed = lvl + 3;
+                platSpawnRate = (int)2800/MyGame.speed;
 
                 world.removeObjects(world.getObjects(Boost.class));
             }
@@ -87,15 +86,21 @@ public class Level extends Actor
     public void spawnPlatform()
     {
         if(platformTimer.millisElapsed() >= platSpawnRate && platformNum > 0)
-        {
+        {          
             int xPos = Greenfoot.getRandomNumber(world.getWidth());
-            
             platformNum--;
-
+            
+            //limit xPos so platform doesn't overlap with shop
+            if(platformNum == 19 + (lvl * 10))
+            {
+                xPos = Greenfoot.getRandomNumber(200);
+            }
+            
             //add platform to screen
             if(platformNum == 0)
             {
                 xPos = world.getWidth()/2;
+                
                 //shop spawn
                 ShopIcon shopIcon = new ShopIcon();
                 world.addObject(shopIcon, 340, -130); 
@@ -103,8 +108,8 @@ public class Level extends Actor
             
             world.addObject(new Platform(platformNum, lvl), xPos, -50);
             
-            platformTimer.mark();
-            coinSpawn(xPos);
+            coinSpawn(xPos);              //spawn coin
+            platformTimer.mark();         //mark timer for platofrm spawn
         }
         
         //if last platform in level, add new level and remove current
