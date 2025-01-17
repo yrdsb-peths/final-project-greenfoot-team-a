@@ -20,7 +20,7 @@ public class Avatar extends Actor {
     public static boolean isDead = false; // Tracks if Avatar dies
     public static boolean isDamaged = false; // Tracks if Avatar is damaged
     public static boolean onGround = true;
-    private boolean onred = false;
+    private boolean wasOnPlatform = false;
     private boolean isMoving = false;
     private String facing = "right";
     public boolean isOnGround = true;
@@ -303,17 +303,20 @@ public class Avatar extends Actor {
     public void fall() {
         int avatarWidth = getImage().getWidth();
         int avatarHeight = getImage().getHeight();
+        
+        int firstTouch = 0;
     
-        // Check for reds directly below the Avatar
+        // Check for platforms directly below the Avatar
         int offsetY = avatarHeight / 2; // Check from the center downwards
         
-        // Find the red below the avatar
-        Actor red = getOneIntersectingObject(Red.class);
+        // Find the platform below the avatar
+        Actor platform = getOneIntersectingObject(Platform.class);
     
-        // No red below, apply gravity and let avatar fall
-        if (red == null|| (red!=null&&velocity<=0)) {
+        // No platform below, apply gravity and let avatar fall
+        if (platform == null || (platform!=null&&velocity<=0)) {
             setLocation(getX(), getY() + velocity); 
             velocity += gravity;  // Apply gravity to velocity
+            firstTouch=0;
     
             // If the avatar hits the ground, stop falling
             if (getY() >= getWorld().getHeight() - offsetY) {
@@ -323,15 +326,18 @@ public class Avatar extends Actor {
                 isJumping = false; // Allow jumping again
             }
         }
-        if (red != null&&velocity>0) {
+        else if (platform != null&&velocity>0) {
             if(velocity>0){
-                if (getY() + offsetY + velocity > red.getY() - (red.getImage().getHeight() / 2)) {
-                    // If falling, ensure avatar is directly above the red (at the top edge of red)
-                    isOnGround=true;
-                    setLocation(getX(), red.getY() - (red.getImage().getHeight() / 2) - offsetY);
-                    velocity = 0;  // Stop vertical movement (gravity or falling)
-                    isJumping = false;  // You're no longer jumping because you've landed
-                } else if (velocity < 0) {
+                if (firstTouch == 0){
+                    setLocation(getX(), platform.getY() - (platform.getImage().getHeight() / 2) - offsetY);
+                    firstTouch++;
+                }
+                    // If falling, ensure avatar is directly above the platform (at the top edge of platform)
+                setLocation(getX(), getY() + velocity);
+                isOnGround=true;
+                velocity = MyGame.speed;  // Stop vertical movement (gravity or falling)
+                isJumping = false;  // You're no longer jumping because you've landed
+                if (velocity < 0) {
                     // If velocity is negative (jumping), allow upward movement
                     setLocation(getX(), getY() + velocity); // Move up if jumping
                     velocity--;  // Slow down the upward movement (gravity)
@@ -347,7 +353,7 @@ public class Avatar extends Actor {
         if(coin != null) {
             getWorld().removeObject(coin); //remove coin actor that interesects with avatar
             MyGame.increaseScore(100); //increase score
-            MyGame.increaseCoins(); //increase coin count
+            MyGame.numCoins++; //increase coin count
         }
     }
     
@@ -371,7 +377,8 @@ public class Avatar extends Actor {
         checkJump();
         checkWarp();
         checkKeys();
-        //collect();
-        //checkShop();
+        System.out.println(wasOnPlatform);
+        collect();
+        checkShop();
     }
 }
