@@ -20,9 +20,10 @@ public class Avatar extends Actor {
     public static boolean isDead = false; // Tracks if Avatar dies
     public static boolean isDamaged = false; // Tracks if Avatar is damaged
     public static boolean onGround = true;
-    private boolean onPlatform = false;
+    private boolean onred = false;
     private boolean isMoving = false;
     private String facing = "right";
+    public boolean isOnGround = true;
 
     // Image variables
     GreenfootImage[] idleRight = new GreenfootImage[6];
@@ -267,16 +268,20 @@ public class Avatar extends Actor {
     public void checkJump() {
         boolean jumpKeyHeld = Greenfoot.isKeyDown("up");
     
-        // Jump if the key is pressed, the player is not dead, and it is not already jumping
-        if (jumpKeyHeld && keyReleased && !isDead && !isJumping){
-            velocity = minJumpVelocity; // Start the jump with a minimum velocity
-            isJumping = true; // Set jumping flag to true
-            jumpCharge = 0; // Reset the jump charge (unused in your current setup)
+        // Jump if the key is pressed and released, the player is not dead, and it is not already jumping
+        if (jumpKeyHeld && keyReleased && !isDead && isOnGround) {
+            // Only start the jump if we aren't already jumping
+            if (!isJumping) {
+                velocity = minJumpVelocity; // Start the jump with a minimum velocity
+                isJumping = true;  // Set jumping flag to true
+                jumpCharge = 0;  // Start charging the jump (if needed)
+                keyReleased = false;  // Prevent repeated jumping while key is held
+            }
         }
     
         // Handle jump charging while the jump key is held down
         if (jumpKeyHeld && isJumping) {
-            if (jumpCharge < 15) {  // Limit the jump charge
+            if (jumpCharge < 15) {  // Limit the jump charge (optional)
                 jumpCharge++;
                 velocity--; // Increase jump velocity (going up)
                 if (velocity < maxJumpVelocity) {
@@ -287,8 +292,10 @@ public class Avatar extends Actor {
     
         // Reset key release state when the jump key is released
         if (!jumpKeyHeld) {
-            keyReleased = true; // Allow for a new jump next time
+            keyReleased = true;  // Allow for a new jump next time the key is pressed
         }
+    
+        // Optionally limit the maximum velocity (if needed)
         velocity = Math.min(velocity, 20);
     }
 
@@ -297,36 +304,39 @@ public class Avatar extends Actor {
         int avatarWidth = getImage().getWidth();
         int avatarHeight = getImage().getHeight();
     
-        // Check for platforms directly below the Avatar
+        // Check for reds directly below the Avatar
         int offsetY = avatarHeight / 2; // Check from the center downwards
         
-        // Find the platform below the avatar
-        Actor platform = getOneIntersectingObject(Platform.class);
+        // Find the red below the avatar
+        Actor red = getOneIntersectingObject(Red.class);
     
-        // No platform below, apply gravity and let avatar fall
-        if (platform == null) {
+        // No red below, apply gravity and let avatar fall
+        if (red == null|| (red!=null&&velocity<=0)) {
             setLocation(getX(), getY() + velocity); 
             velocity += gravity;  // Apply gravity to velocity
     
             // If the avatar hits the ground, stop falling
             if (getY() >= getWorld().getHeight() - offsetY) {
-                keyReleased = true;
+                isOnGround=true;
                 setLocation(getX(), getWorld().getHeight() - offsetY);  // Snap to ground
                 velocity = 0; // Stop falling
                 isJumping = false; // Allow jumping again
             }
-        } else {  // Avatar is on a platform
-            if (getY() + offsetY + velocity > platform.getY() - (platform.getImage().getHeight() / 2)) {
-                // If falling, ensure avatar is directly above the platform (at the top edge of platform)
-                setLocation(getX(), platform.getY() - platform.getImage().getHeight() / 2 - offsetY);
-                velocity = 0;  // Stop vertical movement (gravity or falling)
-                isJumping = false;  // You're no longer jumping because you've landed
-            } else if (velocity < 0) {
-                // If velocity is negative (jumping), allow upward movement
-                setLocation(getX(), getY() + velocity); // Move up if jumping
-                velocity--;  // Slow down the upward movement (gravity)
+        }
+        if (red != null&&velocity>0) {
+            if(velocity>0){
+                if (getY() + offsetY + velocity > red.getY() - (red.getImage().getHeight() / 2)) {
+                    // If falling, ensure avatar is directly above the red (at the top edge of red)
+                    isOnGround=true;
+                    setLocation(getX(), red.getY() - (red.getImage().getHeight() / 2) - offsetY);
+                    velocity = 0;  // Stop vertical movement (gravity or falling)
+                    isJumping = false;  // You're no longer jumping because you've landed
+                } else if (velocity < 0) {
+                    // If velocity is negative (jumping), allow upward movement
+                    setLocation(getX(), getY() + velocity); // Move up if jumping
+                    velocity--;  // Slow down the upward movement (gravity)
+                }
             }
-
         }
     }
         
