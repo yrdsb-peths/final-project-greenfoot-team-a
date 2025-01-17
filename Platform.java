@@ -13,7 +13,7 @@ public class Platform extends Actor
     public Platform(int platformNum, int lvl)
     {
         GreenfootImage image = platformImgs[Greenfoot.getRandomNumber(2)];
-        image.scale(this.getImage().getWidth() * 13, this.getImage().getHeight() * 13);
+        image.scale(this.getImage().getWidth()*10, this.getImage().getHeight());
         
         this.lvl = lvl;
         this.platformNum = platformNum;
@@ -23,7 +23,7 @@ public class Platform extends Actor
         //if last platform in level
         if(platformNum == 0)
         {
-            image.scale(800, height * 30);
+            image.scale(this.getImage().getWidth()*100, height * 2);
         }
         setImage(image);
             }

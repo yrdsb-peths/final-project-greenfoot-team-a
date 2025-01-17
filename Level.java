@@ -4,7 +4,7 @@ public class Level extends Actor
 {
     //timers
     SimpleTimer platformTimer = new SimpleTimer();      //timer teacking time between platform spawns
-    SimpleTimer levelTimer = new SimpleTimer();         //timer tracking level length
+    public static SimpleTimer levelTimer = new SimpleTimer();         //timer tracking level length
     SimpleTimer enemyTimer = new SimpleTimer();         //timer tracking time between enemy spawns
 
     //level variables

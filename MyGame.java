@@ -25,9 +25,6 @@ public class MyGame extends World
         
         setBackground("mainBackground.png");
         
-        Avatar avatar = new Avatar();
-        addObject(avatar, 200, 550);
-        
         //displays score on  game world
         scoreLabel = new ScoreLabel(score, 35);
         addObject(scoreLabel, 350, 20);

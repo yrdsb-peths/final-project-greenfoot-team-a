@@ -20,9 +20,10 @@ public class Avatar extends Actor {
     public static boolean isDead = false; // Tracks if Avatar dies
     public static boolean isDamaged = false; // Tracks if Avatar is damaged
     public static boolean onGround = true;
-    private boolean onPlatform = false;
+    private boolean wasOnPlatform = false;
     private boolean isMoving = false;
     private String facing = "right";
+    public boolean isOnGround = true;
 
     // Image variables
     GreenfootImage[] idleRight = new GreenfootImage[6];
@@ -47,66 +48,66 @@ public class Avatar extends Actor {
         // Load idleRight image
         for (int i = 0; i < 6; i++) {  // Fixed the starting index here
             idleRight[i] = new GreenfootImage("images/sprites/avatar/idle/idle" + (i + 1) + ".png");
-            idleRight[i].scale(100, 100);
+            idleRight[i].scale(52, 42);
         }
 
         // Load idleLeft images
         for (int i = 0; i < 6; i++) {  
             idleLeft[i] = new GreenfootImage("images/sprites/avatar/idle/idle" + (i + 1) + ".png");
             idleLeft[i].mirrorHorizontally();
-            idleLeft[i].scale(100, 100); 
+            idleLeft[i].scale(52, 42); 
         }
 
         // Load runRight images
         for (int i = 0; i < 6; i++) {
             runRight[i] = new GreenfootImage("images/sprites/avatar/run/run" + (i + 1) + ".png");
-            runRight[i].scale(100, 100);
+            runRight[i].scale(52, 42);
         }
 
         // Load runLeft images
         for (int i = 0; i < 6; i++) {
             runLeft[i] = new GreenfootImage("images/sprites/avatar/run/run" + (i + 1) + ".png");
             runLeft[i].mirrorHorizontally();
-            runLeft[i].scale(100, 100); 
+            runLeft[i].scale(52,42); 
         }
 
         // Load jumpRight images
         for (int i = 0; i < 7; i++) {
             jumpRight[i] = new GreenfootImage("images/sprites/avatar/jump/jump" + (i + 1) + ".png");
-            jumpRight[i].scale(100, 100);
+            jumpRight[i].scale(53,42);
         }
 
         // Load jumpLeft images
         for (int i = 0; i < 7; i++) {
             jumpLeft[i] = new GreenfootImage("images/sprites/avatar/jump/jump" + (i + 1) + ".png");
             jumpLeft[i].mirrorHorizontally();
-            jumpLeft[i].scale(100, 100); 
+            jumpLeft[i].scale(53, 42); 
         }
 
         // Load deathRight images
         for (int i = 0; i < 7; i++) {
             deathRight[i] = new GreenfootImage("images/sprites/avatar/death/death" + (i + 1) + ".png");
-            deathRight[i].scale(100, 100);
+            deathRight[i].scale(80, 52);
         }
 
         // Load deathLeft images
         for (int i = 0; i < 7; i++) {
             deathLeft[i] = new GreenfootImage("images/sprites/avatar/death/death" + (i + 1) + ".png");
             deathLeft[i].mirrorHorizontally();
-            deathLeft[i].scale(100, 100);
+            deathLeft[i].scale(80, 52);
         }
 
         // Load damageRight images
         for (int i = 0; i < 4; i++) {
             damageRight[i] = new GreenfootImage("images/sprites/avatar/damage/damage" + (i + 1) + ".png");
-            damageRight[i].scale(100, 100);
+            damageRight[i].scale(52,42);
         }
 
         // Load damageLeft images
         for (int i = 0; i < 4; i++) {
             damageLeft[i] = new GreenfootImage("images/sprites/avatar/damage/damage" + (i + 1) + ".png");
             damageLeft[i].mirrorHorizontally();
-            damageLeft[i].scale(100, 100);
+            damageLeft[i].scale(52,42);
         }
 
         // Set the initial image to idleRight[0]
@@ -231,13 +232,8 @@ public class Avatar extends Actor {
     }
 
     public void checkKeys() {
-        if (Greenfoot.isKeyDown("D") && !isDead) {
+        if (Greenfoot.isKeyDown("D") && !isDead){
             isDead = true; // Changes boolean given condition
-            imageIndex = 0;
-        }
-        
-        if (Greenfoot.isKeyDown("D") && isDead) {
-            isDead = false;; // Changes boolean given condition
             imageIndex = 0;
         }
         
@@ -272,16 +268,20 @@ public class Avatar extends Actor {
     public void checkJump() {
         boolean jumpKeyHeld = Greenfoot.isKeyDown("up");
     
-        // Jump if the key is pressed, the player is not dead, and it is not already jumping
-        if (jumpKeyHeld && keyReleased && !isDead && !isJumping){
-            velocity = minJumpVelocity; // Start the jump with a minimum velocity
-            isJumping = true; // Set jumping flag to true
-            jumpCharge = 0; // Reset the jump charge (unused in your current setup)
+        // Jump if the key is pressed and released, the player is not dead, and it is not already jumping
+        if (jumpKeyHeld && keyReleased && !isDead && isOnGround) {
+            // Only start the jump if we aren't already jumping
+            if (!isJumping) {
+                velocity = minJumpVelocity; // Start the jump with a minimum velocity
+                isJumping = true;  // Set jumping flag to true
+                jumpCharge = 0;  // Start charging the jump (if needed)
+                keyReleased = false;  // Prevent repeated jumping while key is held
+            }
         }
     
         // Handle jump charging while the jump key is held down
         if (jumpKeyHeld && isJumping) {
-            if (jumpCharge < 15) {  // Limit the jump charge
+            if (jumpCharge < 15) {  // Limit the jump charge (optional)
                 jumpCharge++;
                 velocity--; // Increase jump velocity (going up)
                 if (velocity < maxJumpVelocity) {
@@ -292,58 +292,68 @@ public class Avatar extends Actor {
     
         // Reset key release state when the jump key is released
         if (!jumpKeyHeld) {
-            keyReleased = true; // Allow for a new jump next time
+            keyReleased = true;  // Allow for a new jump next time the key is pressed
         }
+    
+        // Optionally limit the maximum velocity (if needed)
+        velocity = Math.min(velocity, 20);
     }
 
 
     public void fall() {
         int avatarWidth = getImage().getWidth();
         int avatarHeight = getImage().getHeight();
-    
-        int offsetY = avatarHeight / 2;
         
-        Platform platform = (Platform) getOneObjectAtOffset(0, this.getY() + offsetY, Platform.class);
+        int firstTouch = 0;
+    
+        // Check for platforms directly below the Avatar
+        int offsetY = avatarHeight / 2; // Check from the center downwards
+        
+        // Find the platform below the avatar
+        Actor platform = getOneIntersectingObject(Platform.class);
     
         // No platform below, apply gravity and let avatar fall
-        if (platform == null) {
+        if (platform == null || (platform!=null&&velocity<=0)) {
             setLocation(getX(), getY() + velocity); 
             velocity += gravity;  // Apply gravity to velocity
-            onPlatform=false;
+            firstTouch=0;
     
             // If the avatar hits the ground, stop falling
-            if (getY() >= getWorld().getHeight() - 30) {
-                setLocation(getX(), getWorld().getHeight() - 30);  // Snap to ground
+            if (getY() >= getWorld().getHeight() - offsetY) {
+                isOnGround=true;
+                setLocation(getX(), getWorld().getHeight() - offsetY);  // Snap to ground
                 velocity = 0; // Stop falling
-                isJumping = false; 
+                isJumping = false; // Allow jumping again
             }
-        } else {  
-            onPlatform = true;
-            isJumping = false;
-    
-            // Check if the avatar is exactly above the platform
-            if (getY() + avatarHeight / 2 > platform.getY()) {
-                // Align avatar's bottom with platform's top, allowing no overlap
-                setLocation(getX(), platform.getY() - avatarHeight / 2);
-                velocity = 0; // Stop gravity from applying
-            }
-    
-            // Allow upward movement if jumping, even while on the platform
-            if (velocity < 0) {
-                setLocation(getX(), getY() + velocity); // Move up if jumping
-                velocity--;  // Decrease the velocity as part of the jump
+        }
+        else if (platform != null&&velocity>0) {
+            if(velocity>0){
+                if (firstTouch == 0){
+                    setLocation(getX(), platform.getY() - (platform.getImage().getHeight() / 2) - offsetY);
+                    firstTouch++;
+                }
+                    // If falling, ensure avatar is directly above the platform (at the top edge of platform)
+                setLocation(getX(), getY() + velocity);
+                isOnGround=true;
+                velocity = MyGame.speed;  // Stop vertical movement (gravity or falling)
+                isJumping = false;  // You're no longer jumping because you've landed
+                if (velocity < 0) {
+                    // If velocity is negative (jumping), allow upward movement
+                    setLocation(getX(), getY() + velocity); // Move up if jumping
+                    velocity--;  // Slow down the upward movement (gravity)
+                }
             }
         }
     }
-    
+        
     public void collect() {
         MyGame world = (MyGame) getWorld();
         
         Actor coin = getOneIntersectingObject(Coin.class); //assign interescting coin an actor
         if(coin != null) {
             getWorld().removeObject(coin); //remove coin actor that interesects with avatar
-            world.increaseScore(100); //increase score
-            world.increaseCoins(); //increase coin count
+            MyGame.increaseScore(100); //increase score
+            MyGame.numCoins++; //increase coin count
         }
     }
     
@@ -361,26 +371,14 @@ public class Avatar extends Actor {
         gameWorld.removeObject(shopLabel); //remove instruction
     }
     
-    public void checkDeath() {
-        if(isTouching(Enemy.class) && ShopWorld.hasPowerup == false) {
-            isDead = true;
-            MyGame.gameOver();
-        }
-        else if(isTouching(Enemy.class) && ShopWorld.hasPowerup == true) {
-            isDamaged = true; 
-            ShopWorld.removePowerup();
-        }
-    }
-    
     public void act() {
         fall();
         animateAvatar();
         checkJump();
         checkWarp();
         checkKeys();
+        System.out.println(wasOnPlatform);
         collect();
-        checkDeath();
         checkShop();
-        System.out.println(onPlatform);
     }
 }
