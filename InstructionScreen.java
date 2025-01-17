@@ -6,6 +6,7 @@ public class InstructionScreen extends World
         "To play this game, you must use the arrow keys",
         "Your goal is to avoid running into the enemy birds",
         "After completing a level, you have the option of",
+        "To enter the shop press [ENTER]!",
         "And that's it! Now try your best and have fun!" 
     };
     
@@ -13,6 +14,7 @@ public class InstructionScreen extends World
         "to jump from one platform to the other.",
         "while collecting as many coins as you can!",
         "entering the shop and purchasing helpful items.",
+        "Each item in the shop will cost 5 coins.",
         "To begin the game, click Next"
     };
     

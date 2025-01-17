@@ -325,7 +325,7 @@ public class Avatar extends Actor {
                 isOnGround=true;
                 setLocation(getX(), getWorld().getHeight() - offsetY);  // Snap to ground
                 velocity = 0; // Stop falling
-                isDead=true;
+                isDead = true;
                 isJumping = false; // Allow jumping again
             }
         }

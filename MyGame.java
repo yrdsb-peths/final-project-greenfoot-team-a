@@ -31,6 +31,7 @@ public class MyGame extends World
         addObject(scoreLabel, 350, 20);
         addObject(new Label("Score: ", 30), 270, 20);
         
+        //create avatar
         Avatar avatar = new Avatar();
         addObject(avatar, 200, 550);
         
@@ -91,17 +92,17 @@ public class MyGame extends World
     }
     
     public static void gameOver() {
+        //reset all counters
+        numCoins = 0;
+        numFish = 0;
+        score = 0;
+        //go to game over screen
         Greenfoot.setWorld(gameOver);
     }
     
     public static void increaseScore(int addScore) {
         score += addScore;
         scoreLabel.setValue(score);
-    }
-    
-    public static void increaseFish(int addFish) {
-        numFish += addFish;
-        fishLabel.setValue(numFish);
     }
     
     public static int returnFish() {
@@ -111,5 +112,6 @@ public class MyGame extends World
     public static void updateFish(int amount) { //update fish value after shop
         numFish = amount;
         fishLabel.setValue(amount);
+        increaseScore(500);
     }
 }
