@@ -361,6 +361,17 @@ public class Avatar extends Actor {
         gameWorld.removeObject(shopLabel); //remove instruction
     }
     
+    public void checkDeath() {
+        if(isTouching(Enemy.class) && ShopWorld.hasPowerup == false) {
+            isDead = true;
+            MyGame.gameOver();
+        }
+        else if(isTouching(Enemy.class) && ShopWorld.hasPowerup == true) {
+            isDamaged = true; 
+            ShopWorld.removePowerup();
+        }
+    }
+    
     public void act() {
         fall();
         animateAvatar();
@@ -368,6 +379,7 @@ public class Avatar extends Actor {
         checkWarp();
         checkKeys();
         collect();
+        checkDeath();
         checkShop();
         System.out.println(onPlatform);
     }

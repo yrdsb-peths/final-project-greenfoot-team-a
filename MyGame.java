@@ -5,6 +5,8 @@ public class MyGame extends World
     public static Level level;                //current level active
     public static int speed;                  //speed of platforms 
     
+    public static GameOver gameOver = new GameOver();
+    
     //boolean variables tracking active powerups
     public static boolean shield = false;   
     
@@ -52,18 +54,23 @@ public class MyGame extends World
         
         levelSetUp();
     }
-
-    public void act() {
-        fishLabel.setValue(ShopWorld.shopFish);
-    }
     
-    public void enterShop() {
+    public void enterShop() { //set world to shop world while saving game data
         Greenfoot.setWorld(new ShopWorld(this));
     }
     
     public static void increaseCoins() {
         numCoins++;
         coinLabel.setValue(numCoins);
+    }
+    
+    public static int returnCoins() {
+        return numCoins;
+    }
+    
+    public static void updateCoins(int amount) { //update new coin value after shop
+        numCoins = amount;
+        coinLabel.setValue(amount);
     }
     
     /**
@@ -82,6 +89,10 @@ public class MyGame extends World
         }
     }
     
+    public static void gameOver() {
+        Greenfoot.setWorld(gameOver);
+    }
+    
     public static void increaseScore(int addScore) {
         score += addScore;
         scoreLabel.setValue(score);
@@ -90,5 +101,14 @@ public class MyGame extends World
     public static void increaseFish(int addFish) {
         numFish += addFish;
         fishLabel.setValue(numFish);
+    }
+    
+    public static int returnFish() {
+        return numFish;
+    }
+    
+    public static void updateFish(int amount) { //update fish value after shop
+        numFish = amount;
+        fishLabel.setValue(amount);
     }
 }
