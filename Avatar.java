@@ -334,6 +334,7 @@ public class Avatar extends Actor {
                 velocity = 0; // Stop falling
                 isDead = true;
                 isJumping = false; // Allow jumping again
+                MyGame.gameOver();
             }
         }
         else if (platform != null&&velocity>0) {

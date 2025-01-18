@@ -4,9 +4,7 @@ public class MyGame extends World
 {
     public static Level level;                //current level active
     public static int speed;                  //speed of platforms 
-    
-    public static GameOver gameOver = new GameOver();
-    
+        
     //boolean variables tracking active powerups
     public static boolean shield = false;   
     
@@ -75,6 +73,11 @@ public class MyGame extends World
         coinLabel.setValue(amount);
     }
     
+    public static void resetCoins() {
+        numCoins = 0;
+        coinLabel.setValue(0);
+    }
+    
     /**
      * place starting platforms onto screen
      */
@@ -92,16 +95,21 @@ public class MyGame extends World
     }
     
     public static void gameOver() {
-        //reset all counters
-        numCoins = 0;
-        numFish = 0;
-        score = 0;
+        //add final scores
+        Scores.addScore(score);
+        Scores.addFish(numFish);
+        
         //go to game over screen
-        Greenfoot.setWorld(gameOver);
+        Greenfoot.setWorld(new GameOver());
     }
     
     public static void increaseScore(int addScore) {
         score += addScore;
+        scoreLabel.setValue(score);
+    }
+    
+    public static void resetScore() {
+        score = 0;
         scoreLabel.setValue(score);
     }
     
@@ -113,5 +121,10 @@ public class MyGame extends World
         numFish = amount;
         fishLabel.setValue(amount);
         increaseScore(500);
+    }
+    
+    public static void resetFish() {
+        numFish = 0;
+        fishLabel.setValue(0);
     }
 }

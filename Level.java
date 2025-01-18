@@ -27,7 +27,7 @@ public class Level extends Actor
         //spawn rate and speed of platform
         MyGame.speed = lvl + 3;
         platSpawnRate = (int)3100/MyGame.speed;
-
+        
 
         //start timers
         levelTimer.mark();
@@ -117,6 +117,7 @@ public class Level extends Actor
         {
             //add higher level object, remove this level
             MyGame.level = new Level(1 + lvl);
+            MyGame.increaseScore(1000);
             world.addObject(MyGame.level,0,0);
             world.removeObject(this);
         }
