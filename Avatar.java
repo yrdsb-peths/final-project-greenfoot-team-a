@@ -357,8 +357,7 @@ public class Avatar extends Actor {
         }
     }
         
-    public void collision() {;
-        
+    public void collision() {
         Actor coin = getOneIntersectingObject(Coin.class); //assign interescting coin an actor
         if(coin != null) {
             getWorld().removeObject(coin); //remove coin actor that interesects with avatar
@@ -390,8 +389,6 @@ public class Avatar extends Actor {
             gameWorld.removeObject(shopLabel); // Remove instruction if not near shop
         }
     }
-
-
     
     public void act() {
         fall();
