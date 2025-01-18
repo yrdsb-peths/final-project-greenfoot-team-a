@@ -6,6 +6,7 @@ public class GameOver extends World
     TitleLabel highScoresLabel = new TitleLabel("Scores:              Fish: ", 40);
     TitleLabel instructionLabel = new TitleLabel("Press [ENTER] to \nplay again", 45);
     
+    //tracks scores
     ScoreLabel scoreLabel1; 
     ScoreLabel scoreLabel2;
     ScoreLabel scoreLabel3;
@@ -13,6 +14,7 @@ public class GameOver extends World
     ScoreLabel scoreLabel5;
     ScoreLabel scoreLabel6;
     
+    //tracks fish collected
     ScoreLabel fishLabel1; 
     ScoreLabel fishLabel2;
     ScoreLabel fishLabel3;
@@ -29,6 +31,7 @@ public class GameOver extends World
         addObject(highScoresLabel, getWidth()/2, 140);
         addObject(instructionLabel, getWidth()/2, 550);
         
+        //get scores
         Integer score1 = Scores.returnScoreValue(1);
         Integer score2 = Scores.returnScoreValue(2);
         Integer score3 = Scores.returnScoreValue(3);
@@ -36,6 +39,7 @@ public class GameOver extends World
         Integer score5 = Scores.returnScoreValue(5);
         Integer score6 = Scores.returnScoreValue(6);
         
+        //get number of fish
         Integer fish1 = Scores.returnFishValue(1);
         Integer fish2 = Scores.returnFishValue(2);
         Integer fish3 = Scores.returnFishValue(3);
@@ -43,6 +47,7 @@ public class GameOver extends World
         Integer fish5 = Scores.returnFishValue(5);
         Integer fish6 = Scores.returnFishValue(6);
         
+        //adds score if it exists
         if(score1 != null && fish1 != null) {
             scoreLabel1 = new ScoreLabel(score1, 35); 
             addObject(scoreLabel1, 65, 190); 
@@ -83,9 +88,11 @@ public class GameOver extends World
     
     public void act() {
         if(Greenfoot.isKeyDown("enter")) {
+            //reset stats
             MyGame.resetScore();
             MyGame.resetCoins();
             MyGame.resetFish();
+            //go back to new game
             Greenfoot.setWorld(new MyGame());
         }
     }
