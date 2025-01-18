@@ -22,8 +22,10 @@ public class Avatar extends Actor {
     public static boolean onGround = true;
     private boolean wasOnPlatform = false;
     private boolean isMoving = false;
-    private String facing = "right";
+    public static String facing = "right";
     public boolean isOnGround = true;
+    
+    World currentWorld = getWorld();
 
     // Image variables
     GreenfootImage[] idleRight = new GreenfootImage[6];
@@ -125,9 +127,14 @@ public class Avatar extends Actor {
         }
         animationTimer.mark();
         
+        World currentWorld = getWorld();
+        
         // If the avatar is dead, play the death animation and stop after the last frame
         if (isDead) {
-            MyGame.start = false;
+            if (currentWorld instanceof MyGame){
+                int avatarX = getX();
+                Greenfoot.setWorld(new FallingWorld(avatarX, facing));
+            }
             if (facing.equals("right")) {
                 imageIndex = imageIndex % deathRight.length;
                 setImage(deathRight[imageIndex]);
@@ -349,8 +356,7 @@ public class Avatar extends Actor {
         }
     }
         
-    public void collision() {
-        MyGame world = (MyGame) getWorld();
+    public void collision() {;
         
         Actor coin = getOneIntersectingObject(Coin.class); //assign interescting coin an actor
         if(coin != null) {
@@ -364,20 +370,27 @@ public class Avatar extends Actor {
             MyGame.gameOver();
         }
     }
-    
-    public void checkShop() {
-        MyGame gameWorld = (MyGame) getWorld(); 
-        Label shopLabel = new Label("Press [ENTER] to enter shop", 20); //instruct player how to enter shop
         
-        Actor shop = getOneIntersectingObject(ShopIcon.class); //check when avatar is near shop
-        if(shop != null) {
-            gameWorld.addObject(shopLabel, 200, 300);
-            if(Greenfoot.isKeyDown("enter")) {
-                gameWorld.enterShop(); //go to ShopWorld screen
+    public void checkShop() {
+        World currentWorld = getWorld();
+    
+        if (currentWorld instanceof MyGame) {
+            MyGame gameWorld = (MyGame) currentWorld; // Safe cast after type check
+            Label shopLabel = new Label("Press [ENTER] to enter shop", 20); // Instruct player how to enter shop
+            
+            Actor shop = getOneIntersectingObject(ShopIcon.class); // Check when avatar is near shop
+            if (shop != null) {
+                gameWorld.addObject(shopLabel, 200, 300); // Show instruction when near the shop
+                if (Greenfoot.isKeyDown("enter")) {
+                    gameWorld.removeObject(shopLabel); // Remove instruction
+                    gameWorld.enterShop(); // Switch to ShopWorld screen
+                }
             }
+            gameWorld.removeObject(shopLabel); // Remove instruction if not near shop
         }
-        gameWorld.removeObject(shopLabel); //remove instruction
     }
+
+
     
     public void act() {
         fall();
